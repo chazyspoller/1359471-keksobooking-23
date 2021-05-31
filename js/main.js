@@ -1,25 +1,25 @@
 function getRandomInteger (minValue, maxValue) {
-  if (minValue >= 0 && maxValue >= 0) {
-    if (maxValue >= minValue) {
-      return Math.floor(Math.random() * (Math.floor(maxValue) - Math.ceil(minValue) + 1) + Math.ceil(minValue));
-    }
-    return 'Введите, пожалуйста, корректный диапозон (от меньшего к большему)';
+  const min = Math.ceil(minValue);
+  const max = Math.floor(maxValue);
+
+  if (minValue >= 0 && maxValue >= minValue) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-  return 'Введите, пожалуйста, неотрицательные значения для диапозона';
+  return null;
 }
 
 getRandomInteger(5.55, 6.66);
 
 function getRandomFractionalNumber (minValue, maxValue, numbersAfterComma) {
-  if (minValue >= 0 && maxValue >= 0) {
-    if (maxValue >= minValue) {
-      return (Math.random() * (maxValue - minValue) + minValue).toFixed(numbersAfterComma);
-    }
-    return 'Введите, пожалуйста, корректный диапозон (от меньшего к большему)';
+  if (minValue >= 0 && maxValue >= minValue && numbersAfterComma >= 0) {
+    const randomNumber = Math.random() * (maxValue - minValue) + minValue;
+
+    return +randomNumber.toFixed(numbersAfterComma);
   }
 
-  return 'Введите, пожалуйста, неотрицательные значения для диапозона';
+  return null;
 }
 
 getRandomFractionalNumber(5.06, 5.55, 3);
+
