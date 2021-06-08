@@ -1,4 +1,13 @@
 const NUMBER_OF_ADS = 10;
+const LAT_MIN = 35.65;
+const LAT_MAX = 35.7;
+const LNG_MIN = 139.7;
+const LNG_MAX = 139.8;
+const NUMBERS_AFTER_COMMA = 5;
+const PRICE_MIN = 0;
+const PRICE_MAX = 100;
+const PARAMETER_MIN = 1;
+const PARAMENTER_MAX = 6;
 
 const TYPES = [
   'palace',
@@ -29,11 +38,8 @@ const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
-//generating an image paths
-const avatarsUrl = (index) => {
-  const avatarURL = (index < NUMBER_OF_ADS) ? `img/avatars/user0${index}.png` : `img/avatars/user${index}.png`;
-  return avatarURL;
-};
+//generation of image paths
+const getAvatarsUrl = (index) => (index < NUMBER_OF_ADS) ? `img/avatars/user0${index}.png` : `img/avatars/user${index}.png`;
 
 const getRandomInteger = (minValue, maxValue) => {
   const min = Math.ceil(minValue);
@@ -54,10 +60,7 @@ const getRandomFractionalNumber = (minValue, maxValue, numbersAfterComma = 1) =>
   return null;
 };
 
-const getRandomArrayElement = (elements) => {
-  const randomElement = elements[getRandomInteger(0, elements.length - 1)];
-  return randomElement;
-};
+const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
 const getSomeRandomElements = (arrayLength, elements) => {
   const arrayCopy = elements.slice();
@@ -70,29 +73,31 @@ const getSomeRandomElements = (arrayLength, elements) => {
 };
 
 const createAd = (index) => {
-  const ad = {
+  const latCoordinate = getRandomFractionalNumber(LAT_MIN, LAT_MAX, NUMBERS_AFTER_COMMA);
+  const lngCoordinate = getRandomFractionalNumber(LNG_MIN, LNG_MAX, NUMBERS_AFTER_COMMA);
+
+  return {
     author: {
-      avatar: avatarsUrl(index),
+      avatar: getAvatarsUrl(index),
     },
     offer: {
       title: 'Объявление',
-      address: `${getRandomFractionalNumber(35.65, 35.7, 5)}, ${getRandomFractionalNumber(139.7, 139.8, 5)}`,
-      price: getRandomInteger(0, 100),
+      address: `${latCoordinate}, ${lngCoordinate}`,
+      price: getRandomInteger(PRICE_MIN, PRICE_MAX),
       type: getRandomArrayElement(TYPES),
-      rooms: getRandomInteger(1, 5),
-      guests: getRandomInteger(1, 5),
+      rooms: getRandomInteger(PARAMETER_MIN, PARAMENTER_MAX),
+      guests: getRandomInteger(PARAMETER_MIN, PARAMENTER_MAX),
       checkin: getRandomArrayElement(TIME),
       checkout: getRandomArrayElement(TIME),
-      features: getSomeRandomElements(getRandomInteger(1, FEATURES.length), FEATURES),
+      features: getSomeRandomElements(getRandomInteger(PARAMETER_MIN, FEATURES.length), FEATURES),
       description: 'Лучшее место',
-      photos: getSomeRandomElements(getRandomInteger(1, 6), PHOTOS),
+      photos: getSomeRandomElements(getRandomInteger(PARAMETER_MIN, PARAMENTER_MAX), PHOTOS),
     },
     location: {
-      lat: getRandomFractionalNumber(35.65, 35.7, 5),
-      lng: getRandomFractionalNumber(139.7, 139.8, 5),
+      lat: latCoordinate,
+      lng: lngCoordinate,
     },
   };
-  return ad;
 };
 
 const setOfAds = new Array(NUMBER_OF_ADS).fill(null);
