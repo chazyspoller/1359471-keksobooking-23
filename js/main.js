@@ -1,7 +1,4 @@
-import {createAd, NUMBER_OF_ADS} from './temporary-data.js';
-
-const setOfAds = [];
-
-for (let index = 0; index < NUMBER_OF_ADS; index++) {
-  setOfAds[index] = createAd(index + 1);
-}
+import {createAds} from './temporary-data.js';
+const NUMBER_OF_ADS = 10;
+const setOfAds = createAds(NUMBER_OF_ADS);
+document.write(setOfAds);

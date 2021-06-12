@@ -1,6 +1,5 @@
 import {getRandomInteger, getRandomFractionalNumber, getRandomArrayElement, getSomeRandomElements} from './util.js';
 
-const NUMBER_OF_ADS = 10;
 const LAT_MIN = 35.65;
 const LAT_MAX = 35.7;
 const LNG_MIN = 139.7;
@@ -41,34 +40,38 @@ const PHOTOS = [
 ];
 
 //generation of image paths
-const getAvatarsUrl = (index) => (index < NUMBER_OF_ADS) ? `img/avatars/user0${index}.png` : `img/avatars/user${index}.png`;
+const getAvatarsUrl = (index, NUMBER_OF_ADS) => (index < NUMBER_OF_ADS) ? `img/avatars/user0${index}.png` : `img/avatars/user${index}.png`;
 
-const createAd = (index) => {
-  const latCoordinate = getRandomFractionalNumber(LAT_MIN, LAT_MAX, NUMBERS_AFTER_COMMA);
-  const lngCoordinate = getRandomFractionalNumber(LNG_MIN, LNG_MAX, NUMBERS_AFTER_COMMA);
+const createAds = (NUMBER_OF_ADS) => {
+  const ads = [];
 
-  return {
-    author: {
-      avatar: getAvatarsUrl(index),
-    },
-    offer: {
-      title: 'Объявление',
-      address: `${latCoordinate}, ${lngCoordinate}`,
-      price: getRandomInteger(PRICE_MIN, PRICE_MAX),
-      type: getRandomArrayElement(TYPES),
-      rooms: getRandomInteger(PARAMETER_MIN, PARAMENTER_MAX),
-      guests: getRandomInteger(PARAMETER_MIN, PARAMENTER_MAX),
-      checkin: getRandomArrayElement(TIME),
-      checkout: getRandomArrayElement(TIME),
-      features: getSomeRandomElements(getRandomInteger(PARAMETER_MIN, FEATURES.length), FEATURES),
-      description: 'Лучшее место',
-      photos: getSomeRandomElements(getRandomInteger(PARAMETER_MIN, PARAMENTER_MAX), PHOTOS),
-    },
-    location: {
-      lat: latCoordinate,
-      lng: lngCoordinate,
-    },
-  };
+  for (let index = 1; index <= NUMBER_OF_ADS; index++) {
+    const latCoordinate = getRandomFractionalNumber(LAT_MIN, LAT_MAX, NUMBERS_AFTER_COMMA);
+    const lngCoordinate = getRandomFractionalNumber(LNG_MIN, LNG_MAX, NUMBERS_AFTER_COMMA);
+    ads[index - 1] = {
+      author: {
+        avatar: getAvatarsUrl(index, NUMBER_OF_ADS),
+      },
+      offer: {
+        title: 'Объявление',
+        address: `${latCoordinate}, ${lngCoordinate}`,
+        price: getRandomInteger(PRICE_MIN, PRICE_MAX),
+        type: getRandomArrayElement(TYPES),
+        rooms: getRandomInteger(PARAMETER_MIN, PARAMENTER_MAX),
+        guests: getRandomInteger(PARAMETER_MIN, PARAMENTER_MAX),
+        checkin: getRandomArrayElement(TIME),
+        checkout: getRandomArrayElement(TIME),
+        features: getSomeRandomElements(getRandomInteger(PARAMETER_MIN, FEATURES.length), FEATURES),
+        description: 'Лучшее место',
+        photos: getSomeRandomElements(getRandomInteger(PARAMETER_MIN, PARAMENTER_MAX), PHOTOS),
+      },
+      location: {
+        lat: latCoordinate,
+        lng: lngCoordinate,
+      },
+    };
+  }
+  return ads;
 };
 
-export {createAd, NUMBER_OF_ADS};
+export {createAds};
