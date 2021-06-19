@@ -8,7 +8,7 @@ const LNG_MAX = 139.8;
 const NUMBERS_AFTER_COMMA = 5;
 const PRICE_MIN = 1000;
 const PRICE_MAX = 5000;
-const PARAMETER_MIN = 1;
+const PARAMETER_MIN = 0;
 const PARAMENTER_MAX = 5;
 
 const TITLES = [
@@ -26,6 +26,7 @@ const TYPES = [
 ];
 
 const TIME = [
+  '',
   '12:00',
   '13:00',
   '14:00',
