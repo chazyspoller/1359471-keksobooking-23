@@ -19,7 +19,7 @@ const getRandomFractionalNumber = (minValue, maxValue, numbersAfterComma = 1) =>
 
 const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
-const getSomeRandomElements = (arrayLength, elements) => {
+const getSomeRandomElementsWithoutRepeat = (arrayLength, elements) => {
   const arrayCopy = elements.slice();
   const randomArray = [];
   for (let index = 0; index < arrayLength; index++) {
@@ -29,4 +29,4 @@ const getSomeRandomElements = (arrayLength, elements) => {
   return randomArray;
 };
 
-export {getRandomInteger, getRandomFractionalNumber, getRandomArrayElement, getSomeRandomElements};
+export {getRandomInteger, getRandomFractionalNumber, getRandomArrayElement, getSomeRandomElementsWithoutRepeat};
