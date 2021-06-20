@@ -7,7 +7,7 @@ const setOfAds = createAds();
 
 //Generate Phrases for different values
 //Source: https://proweb63.ru/help/js/declension-in-js
-const declination = (number, txt, cases = [2, 0, 1, 1, 1, 2]) => txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+const getDeclinationOfWordsByNumber = (number, txt, cases = [2, 0, 1, 1, 1, 2]) => txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 
 const dictionaryRooms = [
   'комната',
@@ -36,13 +36,13 @@ const dictionaryGuestsWithRooms = [
 const generateRoomsAndGuestsPhrases = (rooms, guests) => {
   let roomsReaction, guestsReaction;
 
-  roomsReaction = `${rooms} ${declination(rooms, dictionaryRooms)}`;
+  roomsReaction = `${rooms} ${getDeclinationOfWordsByNumber(rooms, dictionaryRooms)}`;
   if (guests) {
-    roomsReaction = `${rooms} ${declination(rooms, dictionaryRoomsWithGuests)}`;
+    roomsReaction = `${rooms} ${getDeclinationOfWordsByNumber(rooms, dictionaryRoomsWithGuests)}`;
   }
-  guestsReaction = `${guests} ${declination(guests, dictionaryGuests)}`;
+  guestsReaction = `${guests} ${getDeclinationOfWordsByNumber(guests, dictionaryGuests)}`;
   if (rooms) {
-    guestsReaction = `${guests} ${declination(guests, dictionaryGuestsWithRooms)}`;
+    guestsReaction = `${guests} ${getDeclinationOfWordsByNumber(guests, dictionaryGuestsWithRooms)}`;
   }
 
   return {
@@ -70,7 +70,6 @@ const checkIsEmpty = (valueToCheck, elementHidden) => {
   if (!valueToCheck || (valueToCheck.length === 0)) {
     elementHidden.classList.add('hidden');
   }
-
   return (!valueToCheck || (valueToCheck.length === 0));
 };
 
@@ -92,39 +91,28 @@ const renderDoubleElements = (elementFirst, elementSecond, callback, newElement)
 };
 
 const getOfferType = (type) => {
-  let content = '';
-
   switch (type) {
     case ('palace'):
-      content = 'Дворец';
-      break;
+      return 'Дворец';
     case ('flat'):
-      content = 'Квартира';
-      break;
+      return 'Квартира';
     case ('house'):
-      content = 'Дом';
-      break;
+      return 'Дом';
     case ('bungalow'):
-      content = 'Бунгало';
-      break;
+      return 'Бунгало';
     case ('hotel'):
-      content = 'Отель';
-      break;
+      return 'Отель';
   }
-
-  return content;
 };
 
 const getFeatures = (featureData, element) => {
   element.classList.remove('popup__feature--wifi');
   element.classList.add(`popup__feature--${featureData}`);
-
   return element;
 };
 
 const getPhotos = (photosData, element) => {
   element.src = photosData;
-
   return element;
 };
 
@@ -189,7 +177,6 @@ const generateCard = (singleAd) => {
   setContent(descriptionData, description);
   //Generate Photos of place
   renderElements(photosData, photo, getPhotos, photos);
-
   return adElement;
 };
 
