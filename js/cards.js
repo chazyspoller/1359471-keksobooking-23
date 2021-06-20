@@ -5,6 +5,92 @@ const cardTemplate = document.querySelector('#card').content.querySelector('.pop
 
 const setOfAds = createAds();
 
+//Generate Phrases for different values
+//Source: https://proweb63.ru/help/js/declension-in-js
+const declination = (number, txt, cases = [2, 0, 1, 1, 1, 2]) => txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+
+const dictionaryRooms = [
+  'комната',
+  'комнаты',
+  'комнат',
+];
+
+const dictionaryRoomsWithGuests = [
+  'комната для ',
+  'комнаты для ',
+  'комнат для ',
+];
+
+const dictionaryGuests = [
+  'гость',
+  'гостя',
+  'гостей',
+];
+
+const dictionaryGuestsWithRooms = [
+  'гостя',
+  'гостей',
+  'гостей',
+];
+
+const generateRoomsAndGuestsPhrases = (rooms, guests) => {
+  let roomsReaction, guestsReaction;
+
+  roomsReaction = `${rooms} ${declination(rooms, dictionaryRooms)}`;
+  if (guests) {
+    roomsReaction = `${rooms} ${declination(rooms, dictionaryRoomsWithGuests)}`;
+  }
+  guestsReaction = `${guests} ${declination(guests, dictionaryGuests)}`;
+  if (rooms) {
+    guestsReaction = `${guests} ${declination(guests, dictionaryGuestsWithRooms)}`;
+  }
+
+  return {
+    firstPhrase: roomsReaction,
+    secondPhrase: guestsReaction,
+  };
+};
+
+const generateTimePhrases = (checkin, checkout) => {
+  let checkoutReaction;
+
+  const checkinReaction = `Заезд после ${checkin}`;
+  checkoutReaction = `, выезд до ${checkout}`;
+  if (!checkin) {
+    checkoutReaction = `Выезд до ${checkout}`;
+  }
+
+  return {
+    firstPhrase: checkinReaction,
+    secondPhrase: checkoutReaction,
+  };
+};
+
+const checkIsEmpty = (valueToCheck, elementHidden) => {
+  if (!valueToCheck || (valueToCheck.length === 0)) {
+    elementHidden.classList.add('hidden');
+  }
+
+  return (!valueToCheck || (valueToCheck.length === 0));
+};
+
+const renderDoubleElements = (elementFirst, elementSecond, callback, newElement) => {
+  const phrases = callback(elementFirst, elementSecond);
+
+  if (!elementFirst) {
+    newElement.textContent = phrases.secondPhrase;
+  }
+  if (!elementSecond) {
+    newElement.textContent = phrases.firstPhrase;
+  }
+  if (!elementFirst && !elementSecond) {
+    newElement.classList.add('hidden');
+  }
+  if (elementFirst && elementSecond) {
+    newElement.textContent = `${phrases.firstPhrase}${phrases.secondPhrase}`;
+  }
+};
+
 const getOfferType = (type) => {
   let content = '';
 
@@ -29,49 +115,46 @@ const getOfferType = (type) => {
   return content;
 };
 
-const getOfferFeatures = (features, template) => {
-  const featuresListFragment = document.createDocumentFragment();
+const getFeatures = (featureData, element) => {
+  element.classList.remove('popup__feature--wifi');
+  element.classList.add(`popup__feature--${featureData}`);
 
-  features.forEach((element) => {
-    const elementTemplate = template.cloneNode(true);
-    elementTemplate.classList.add(`popup__feature--${element}`);
-    featuresListFragment.appendChild(elementTemplate);
-  });
-
-  return featuresListFragment;
+  return element;
 };
 
-const getOfferPhotos = (photos, template) => {
-  const photosListFragment = document.createDocumentFragment();
+const getPhotos = (photosData, element) => {
+  element.src = photosData;
 
-  photos.forEach((photoURL) => {
-    const newPhoto = template.cloneNode(true);
-    newPhoto.src = photoURL;
-    photosListFragment.appendChild(newPhoto);
-  });
-
-  return photosListFragment;
+  return element;
 };
 
-const checkIfEmpty = (elementCheck, elementHidden) => {
-  if (!elementCheck) {
-    elementHidden.classList.add('hidden');
+//Generate features
+//Generate Photos of place
+const renderElements = (elementsData, template, callback, newElement) => {
+  if (!checkIsEmpty(elementsData, newElement)) {
+    const elementsListFragment = document.createDocumentFragment();
+    newElement.innerHTML = '';
+
+    elementsData.forEach ((element) => {
+      const elementTemplate = template.cloneNode(true);
+      elementsListFragment.appendChild(callback(element, elementTemplate));
+    });
+
+    newElement.appendChild(elementsListFragment);
   }
 };
 
-const checkIfEmptyTwoParameters = (elementFirst, elementSecond, reactionFirst, reactionSecond, mainElement) => {
-  if (!elementFirst) {
-    mainElement.textContent = reactionFirst;
-  }
-  if (!elementSecond) {
-    mainElement.textContent = reactionSecond;
-  }
-  if (!elementFirst && !elementSecond) {
-    mainElement.classList.add('hidden');
+const setContent = (valueToCheck, element, elementProperty = 'textContent', valueToSet) => {
+  if (!checkIsEmpty(valueToCheck, element)) {
+    element[elementProperty] = valueToSet? valueToSet: valueToCheck;
   }
 };
 
 const generateCard = (singleAd) => {
+  const {
+    author: {avatar: avatarData},
+    offer: {title: titleData, address: addressData, price: priceData, type: typeData, rooms: roomsData, guests: guestsData, checkin: checkinData, checkout: checkoutData, features: featuresData, description: descriptionData, photos: photosData},
+  } = singleAd;
   const adElement = cardTemplate.cloneNode(true);
   const avatar = adElement.querySelector('.popup__avatar');
   const title = adElement.querySelector('.popup__title');
@@ -87,51 +170,25 @@ const generateCard = (singleAd) => {
   const photo = photos.querySelector('.popup__photo');
 
   //Generate Avatar
-  checkIfEmpty(singleAd.author.avatar, avatar);
-  avatar.src = singleAd.author.avatar;
-
+  setContent(avatarData, avatar, 'src');
   //Generate Title
-  checkIfEmpty(singleAd.offer.title, title);
-  title.textContent = singleAd.offer.title;
-
+  setContent(titleData, title);
   //Generate Address
-  checkIfEmpty(singleAd.offer.address, address);
-  address.textContent = singleAd.offer.address;
-
+  setContent(addressData, address);
   //Generate Price
-  checkIfEmpty(singleAd.offer.price, price);
-  price.textContent = `${singleAd.offer.price} ₽/ночь`;
-
+  setContent(priceData, price, 'textContent', `${priceData} ₽/ночь`);
   //Generate Type of place
-  checkIfEmpty(singleAd.offer.type, type);
-  type.textContent = getOfferType(singleAd.offer.type);
-
+  setContent(typeData, type, 'textContent', getOfferType(typeData));
   //Generate Number of guests and rooms
-  checkIfEmptyTwoParameters(singleAd.offer.rooms, singleAd.offer.guests, `${singleAd.offer.guests} гостей`, `${singleAd.offer.rooms} комнаты`, capacity);
-  if (singleAd.offer.rooms && singleAd.offer.guests) {
-    capacity.textContent = `${singleAd.offer.rooms} комнаты для ${singleAd.offer.guests} гостей`;
-  }
-
+  renderDoubleElements(roomsData, guestsData, generateRoomsAndGuestsPhrases, capacity);
   //Generate time of checkin/checkout
-  checkIfEmptyTwoParameters(singleAd.offer.checkin, singleAd.offer.checkout, `Выезд до ${singleAd.offer.checkout}`, `Заезд после ${singleAd.offer.checkin}`, time);
-  if (singleAd.offer.checkout && singleAd.offer.checkin) {
-    time.textContent = `Заезд после ${singleAd.offer.checkin}, выезд до ${singleAd.offer.checkout}`;
-  }
-
+  renderDoubleElements(checkinData, checkoutData, generateTimePhrases, time);
   //Generate features
-  checkIfEmpty(singleAd.offer.features, features);
-  features.innerHTML = '';
-  featureElements[0].classList.remove('popup__feature--wifi');
-  features.appendChild(getOfferFeatures(singleAd.offer.features, featureElements[0]));
-
+  renderElements(featuresData, featureElements[0], getFeatures, features);
   //Generate Desctription
-  checkIfEmpty(singleAd.offer.description, description);
-  description.textContent = singleAd.offer.description;
-
+  setContent(descriptionData, description);
   //Generate Photos of place
-  photo.remove();
-  checkIfEmpty(singleAd.offer.photos, photos);
-  photos.appendChild(getOfferPhotos(singleAd.offer.photos, photo));
+  renderElements(photosData, photo, getPhotos, photos);
 
   return adElement;
 };
