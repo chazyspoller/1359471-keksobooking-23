@@ -1,6 +1,5 @@
 const adForm = document.querySelector('.ad-form');
 const adFilters = document.querySelector('.map__filters');
-const adTitleInput = adForm.querySelector('#title');
 const adPriceInput = adForm.querySelector('#price');
 const adRoomsSelect = adForm.querySelector('#room_number');
 const adGuestsSelect = adForm.querySelector('#capacity');
@@ -44,10 +43,6 @@ const setEqualTime = (timeOne, timeTwo) => {
   timeTwo.value = timeOne.value;
 };
 
-const onValidityInput = (evt) => {
-  evt.target.reportValidity();
-};
-
 const onRoomsSelect = () => {
   updateDependentValidValues(adRoomsSelect.value, adGuestsSelect, RoomsGuestsMap);
 };
@@ -65,8 +60,6 @@ const onTimeOutSelect = () => {
 };
 
 const addFormListeners = () => {
-  adTitleInput.addEventListener('input', onValidityInput);
-  adPriceInput.addEventListener('input', onValidityInput);
   adRoomsSelect.addEventListener('input', onRoomsSelect);
   adTypeSeclect.addEventListener('input', onTypesSelect);
   adTimeInSelect.addEventListener('input', onTimeInSelect);
@@ -74,8 +67,6 @@ const addFormListeners = () => {
 };
 
 const removeFormListeners = () => {
-  adTitleInput.removeEventListener('input', onValidityInput);
-  adPriceInput.removeEventListener('input', onValidityInput);
   adRoomsSelect.removeEventListener('input', onRoomsSelect);
   adTypeSeclect.removeEventListener('input', onTypesSelect);
   adTimeInSelect.removeEventListener('input', onTimeInSelect);
