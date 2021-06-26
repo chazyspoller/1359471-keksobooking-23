@@ -44,11 +44,7 @@ const setEqualTime = (timeOne, timeTwo) => {
   timeTwo.value = timeOne.value;
 };
 
-const onTitleInput = (evt) => {
-  evt.target.reportValidity();
-};
-
-const onPriceInput = (evt) => {
+const onValidityInput = (evt) => {
   evt.target.reportValidity();
 };
 
@@ -69,8 +65,8 @@ const onTimeOutSelect = () => {
 };
 
 const addFormListeners = () => {
-  adTitleInput.addEventListener('input', onTitleInput);
-  adPriceInput.addEventListener('input', onPriceInput);
+  adTitleInput.addEventListener('input', onValidityInput);
+  adPriceInput.addEventListener('input', onValidityInput);
   adRoomsSelect.addEventListener('input', onRoomsSelect);
   adTypeSeclect.addEventListener('input', onTypesSelect);
   adTimeInSelect.addEventListener('input', onTimeInSelect);
@@ -78,8 +74,8 @@ const addFormListeners = () => {
 };
 
 const removeFormListeners = () => {
-  adTitleInput.removeEventListener('input', onTitleInput);
-  adPriceInput.removeEventListener('input', onPriceInput);
+  adTitleInput.removeEventListener('input', onValidityInput);
+  adPriceInput.removeEventListener('input', onValidityInput);
   adRoomsSelect.removeEventListener('input', onRoomsSelect);
   adTypeSeclect.removeEventListener('input', onTypesSelect);
   adTimeInSelect.removeEventListener('input', onTimeInSelect);
