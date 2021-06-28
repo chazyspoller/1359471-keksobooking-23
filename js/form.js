@@ -36,7 +36,6 @@ const updateDependentValidValues = (valueCheck, valueChange, mapList) => {
 const setMinPrice = (type, priceField, mapList) => {
   priceField.setAttribute('min', mapList[type]);
   priceField.setAttribute('placeholder', mapList[type]);
-  priceField.reportValidity();
 };
 
 const setEqualTime = (timeOne, timeTwo) => {
@@ -97,4 +96,4 @@ adForm.addEventListener('submit', () => {
   switchToInactiveState();
 });
 
-export {switchToActiveState};
+export {switchToActiveState, switchToInactiveState};
