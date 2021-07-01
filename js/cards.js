@@ -1,9 +1,4 @@
-import {createAds} from './temporary-data.js';
-
-const cardsList  = document.querySelector('#map-canvas');
 const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
-
-const setOfAds = createAds();
 
 //Generate Phrases for different values
 //Source: https://proweb63.ru/help/js/declension-in-js
@@ -180,4 +175,4 @@ const generateCard = (singleAd) => {
   return adElement;
 };
 
-cardsList.appendChild(generateCard(setOfAds[0]));
+export {generateCard};
