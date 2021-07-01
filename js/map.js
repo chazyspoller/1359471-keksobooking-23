@@ -1,15 +1,19 @@
 import {switchToActiveState, switchToInactiveState} from './form.js';
 import {createAds} from './temporary-data.js';
 import {generateCard} from './cards.js';
-switchToInactiveState();
-
-const setOfAds = createAds();
-const addressField = document.querySelector('#address');
-const clearBtn = document.querySelector('.ad-form__reset');
 
 const LAT_TOKYO = 35.6895;
 const LNG_TOKYO = 139.69171;
 const MAP_SCALE = 12;
+
+const setOfAds = createAds();
+const addressField = document.querySelector('#address');
+const adForm = document.querySelector('.ad-form');
+const adFilters = document.querySelector('.map__filters');
+const adPriceInput = adForm.querySelector('#price');
+const clearBtn = document.querySelector('.ad-form__reset');
+
+switchToInactiveState();
 
 const setValueToAddressField = (marker) => {
   const coordinates = marker.getLatLng();
@@ -56,7 +60,7 @@ L.tileLayer(
 mainMarker.addTo(map);
 
 //Set new coordinates of pin to address field
-mainMarker.on('moveend', (evt) => {
+mainMarker.on('move', (evt) => {
   setValueToAddressField(evt.target);
 });
 
@@ -95,8 +99,20 @@ setOfAds.forEach((ad) => {
   createAdPins(ad);
 });
 
+//Clear ad form/filters form
+const resetFormFields = () => {
+  adForm.reset();
+  adFilters.reset();
+  adPriceInput.setAttribute('min', 1000);
+  adPriceInput.setAttribute('placeholder', 1000);
+  setValueToAddressField(mainMarker);
+};
+
 //Add a map cleaning function
-const onClearFormBtn = () => {
+const onClearFormBtn = (evt) => {
+  evt.preventDefault();
+  resetFormFields();
+
   mainMarker.setLatLng({
     lat: LAT_TOKYO,
     lng: LNG_TOKYO,
