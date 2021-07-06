@@ -71,21 +71,23 @@ const onClearFormBtn = (evt) => {
   resetFormFields();
 };
 
+//Add message template
+const addModal = (modal) => {
+  document.body.appendChild(modal);
+  modal.classList.add('hidden');
+};
+
+addModal(modalSuccess);
+addModal(modalError);
+
 //Submit Form and show a message
 const onKeyDownEsc = (modal, evt) => {
   if (evt.key === 'Escape' || evt.key === 'Esc') {
-    // eslint-disable-next-line no-use-before-define
-    closeModalMessage(modal);
+    modal.classList.add('hidden');
   }
 };
 
 const onClickModal = (modal) => {
-  // eslint-disable-next-line no-use-before-define
-  closeModalMessage(modal);
-};
-
-const addModal = (modal) => {
-  document.body.appendChild(modal);
   modal.classList.add('hidden');
 };
 
@@ -98,8 +100,7 @@ const openModalMessage = (modal) => {
   }
 };
 
-const closeModalMessage = (modal) => {
-  modal.classList.add('hidden');
+const removeModalListeners = (modal) => {
   document.removeEventListener('keydown', onKeyDownEsc.bind(this, modal));
   document.removeEventListener('click', onClickModal.bind(this, modal));
   if (modal.contains(buttonClosePopup)) {
@@ -118,9 +119,8 @@ const onErrorSend = () => {
 
 const onSubmitForm = (evt) => {
   evt.preventDefault();
-  addModal(modalSuccess);
-  addModal(modalError);
   sendData(onSuccessSend, onErrorSend, evt);
+  removeModalListeners(modalError);
 };
 
 //Form Listeners
