@@ -10,7 +10,6 @@ const addressField = document.querySelector('#address');
 const adForm = document.querySelector('.ad-form');
 const adFilters = document.querySelector('.map__filters');
 const adPriceInput = adForm.querySelector('#price');
-const clearBtn = document.querySelector('.ad-form__reset');
 
 switchToInactiveState();
 
@@ -119,12 +118,5 @@ const resetFormFields = () => {
     lng: LNG_TOKYO,
   }, MAP_SCALE);
 };
-
-//Add a map cleaning function
-const onClearFormBtn = (evt) => {
-  evt.preventDefault();
-  resetFormFields();
-};
-clearBtn.addEventListener('click', onClearFormBtn);
 
 export {renderAdsOnMap, createAdPins, resetFormFields};

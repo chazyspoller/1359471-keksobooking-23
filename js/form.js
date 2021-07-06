@@ -9,6 +9,7 @@ const adGuestsSelect = adForm.querySelector('#capacity');
 const adTypeSeclect = adForm.querySelector('#type');
 const adTimeInSelect = adForm.querySelector('#timein');
 const adTimeOutSelect = adForm.querySelector('#timeout');
+const clearBtn = document.querySelector('.ad-form__reset');
 const modalSuccess = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
 const modalError = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
 const buttonClosePopup = modalError.querySelector('.error__button');
@@ -62,6 +63,12 @@ const onTimeInSelect = () => {
 
 const onTimeOutSelect = () => {
   setEqualTime(adTimeOutSelect, adTimeInSelect);
+};
+
+//Add a map cleaning function
+const onClearFormBtn = (evt) => {
+  evt.preventDefault();
+  resetFormFields();
 };
 
 //Submit Form and show a message
@@ -123,6 +130,7 @@ const addFormListeners = () => {
   adTimeInSelect.addEventListener('input', onTimeInSelect);
   adTimeOutSelect.addEventListener('input', onTimeOutSelect);
   adForm.addEventListener('submit', onSubmitForm);
+  clearBtn.addEventListener('click', onClearFormBtn);
 };
 
 const removeFormListeners = () => {
@@ -130,7 +138,8 @@ const removeFormListeners = () => {
   adTypeSeclect.removeEventListener('input', onTypesSelect);
   adTimeInSelect.removeEventListener('input', onTimeInSelect);
   adTimeOutSelect.removeEventListener('input', onTimeOutSelect);
-  adForm.addEventListener('submit', onSubmitForm);
+  adForm.removeEventListener('submit', onSubmitForm);
+  clearBtn.removeEventListener('click', onClearFormBtn);
 };
 
 //Activation/Disactivation of form
