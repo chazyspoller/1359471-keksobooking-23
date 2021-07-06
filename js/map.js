@@ -1,12 +1,11 @@
 import {switchToActiveState, switchToInactiveState} from './form.js';
-import {createAds} from './temporary-data.js';
+import {renderAds} from './data.js';
 import {generateCard} from './cards.js';
 
 const LAT_TOKYO = 35.6895;
 const LNG_TOKYO = 139.69171;
 const MAP_SCALE = 12;
 
-const setOfAds = createAds();
 const addressField = document.querySelector('#address');
 const adForm = document.querySelector('.ad-form');
 const adFilters = document.querySelector('.map__filters');
@@ -42,6 +41,7 @@ const mainMarker = L.marker(
 const map = L.map('map-canvas')
   .on('load', () => {
     switchToActiveState();
+    renderAds();
     setValueToAddressField(mainMarker);
   })
   .setView({
@@ -95,9 +95,11 @@ const createAdPins = (ad) => {
   );
 };
 
-setOfAds.forEach((ad) => {
-  createAdPins(ad);
-});
+const renderAdsOnMap = (ads, createPin) => {
+  ads.forEach((ad) => {
+    createPin(ad);
+  });
+};
 
 //Clear ad form/filters form
 const resetFormFields = () => {
@@ -106,12 +108,6 @@ const resetFormFields = () => {
   adPriceInput.setAttribute('min', 1000);
   adPriceInput.setAttribute('placeholder', 1000);
   setValueToAddressField(mainMarker);
-};
-
-//Add a map cleaning function
-const onClearFormBtn = (evt) => {
-  evt.preventDefault();
-  resetFormFields();
 
   mainMarker.setLatLng({
     lat: LAT_TOKYO,
@@ -123,4 +119,12 @@ const onClearFormBtn = (evt) => {
     lng: LNG_TOKYO,
   }, MAP_SCALE);
 };
+
+//Add a map cleaning function
+const onClearFormBtn = (evt) => {
+  evt.preventDefault();
+  resetFormFields();
+};
 clearBtn.addEventListener('click', onClearFormBtn);
+
+export {renderAdsOnMap, createAdPins, resetFormFields};

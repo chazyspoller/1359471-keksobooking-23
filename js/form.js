@@ -1,3 +1,6 @@
+import {sendData} from './data.js';
+import {resetFormFields} from './map.js';
+
 const adForm = document.querySelector('.ad-form');
 const adFilters = document.querySelector('.map__filters');
 const adPriceInput = adForm.querySelector('#price');
@@ -6,6 +9,9 @@ const adGuestsSelect = adForm.querySelector('#capacity');
 const adTypeSeclect = adForm.querySelector('#type');
 const adTimeInSelect = adForm.querySelector('#timein');
 const adTimeOutSelect = adForm.querySelector('#timeout');
+const modalSuccess = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+const modalError = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+const buttonClosePopup = modalError.querySelector('.error__button');
 
 const RoomsGuestsMap = {
   1: [1],
@@ -58,11 +64,65 @@ const onTimeOutSelect = () => {
   setEqualTime(adTimeOutSelect, adTimeInSelect);
 };
 
+//Submit Form and show a message
+const onKeyDownEsc = (modal, evt) => {
+  if (evt.key === 'Escape' || evt.key === 'Esc') {
+    // eslint-disable-next-line no-use-before-define
+    closeModalMessage(modal);
+  }
+};
+
+const onClickModal = (modal) => {
+  // eslint-disable-next-line no-use-before-define
+  closeModalMessage(modal);
+};
+
+const addModal = (modal) => {
+  document.body.appendChild(modal);
+  modal.classList.add('hidden');
+};
+
+const openModalMessage = (modal) => {
+  modal.classList.remove('hidden');
+  document.addEventListener('keydown', onKeyDownEsc.bind(this, modal));
+  document.addEventListener('click', onClickModal.bind(this, modal));
+  if (modal.contains(buttonClosePopup)) {
+    buttonClosePopup.addEventListener('click', onClickModal.bind(this, modal));
+  }
+};
+
+const closeModalMessage = (modal) => {
+  modal.classList.add('hidden');
+  document.removeEventListener('keydown', onKeyDownEsc.bind(this, modal));
+  document.removeEventListener('click', onClickModal.bind(this, modal));
+  if (modal.contains(buttonClosePopup)) {
+    buttonClosePopup.removeEventListener('click', onClickModal.bind(this, modal));
+  }
+};
+
+const onSuccessSend = () => {
+  openModalMessage(modalSuccess);
+  resetFormFields();
+};
+
+const onErrorSend = () => {
+  openModalMessage(modalError);
+};
+
+const onSubmitForm = (evt) => {
+  evt.preventDefault();
+  addModal(modalSuccess);
+  addModal(modalError);
+  sendData(onSuccessSend, onErrorSend, evt);
+};
+
+//Form Listeners
 const addFormListeners = () => {
   adRoomsSelect.addEventListener('input', onRoomsSelect);
   adTypeSeclect.addEventListener('input', onTypesSelect);
   adTimeInSelect.addEventListener('input', onTimeInSelect);
   adTimeOutSelect.addEventListener('input', onTimeOutSelect);
+  adForm.addEventListener('submit', onSubmitForm);
 };
 
 const removeFormListeners = () => {
@@ -70,6 +130,7 @@ const removeFormListeners = () => {
   adTypeSeclect.removeEventListener('input', onTypesSelect);
   adTimeInSelect.removeEventListener('input', onTimeInSelect);
   adTimeOutSelect.removeEventListener('input', onTimeOutSelect);
+  adForm.addEventListener('submit', onSubmitForm);
 };
 
 //Activation/Disactivation of form
@@ -91,9 +152,5 @@ const switchToActiveState = () => {
   changeDisabledStatusOfElementWithChildren(adFilters, 'map__filters--disabled', false, 'remove');
   addFormListeners();
 };
-
-adForm.addEventListener('submit', () => {
-  switchToInactiveState();
-});
 
 export {switchToActiveState, switchToInactiveState};

@@ -29,4 +29,27 @@ const getSomeRandomElementsWithoutRepeat = (arrayLength, elements) => {
   return randomArray;
 };
 
-export {getRandomInteger, getRandomFractionalNumber, getRandomArrayElement, getSomeRandomElementsWithoutRepeat};
+const showMessage = (message) => {
+  const messageContainer = document.createElement('div');
+  messageContainer.style.zIndex = 500;
+  messageContainer.style.position = 'fixed';
+  messageContainer.style.left = '25%';
+  messageContainer.style.right = '25%';
+  messageContainer.style.top = '30%';
+  messageContainer.style.padding = '15px 5px';
+  messageContainer.style.fontSize = '20px';
+  messageContainer.style.color = 'red';
+  messageContainer.style.textAlign = 'center';
+  messageContainer.style.backgroundColor = 'black';
+  messageContainer.style.boxShadow = '0 0 10px 0 grey';
+
+  messageContainer.textContent = message;
+
+  document.body.append(messageContainer);
+
+  setTimeout(() => {
+    messageContainer.remove();
+  }, 5000);
+};
+
+export {getRandomInteger, getRandomFractionalNumber, getRandomArrayElement, getSomeRandomElementsWithoutRepeat, showMessage};
