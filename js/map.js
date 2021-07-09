@@ -1,10 +1,12 @@
 import {switchToActiveState, switchToInactiveState} from './form.js';
-import {renderAds} from './data.js';
+import {loadData, getMethod} from './api.js';
 import {generateCard} from './cards.js';
+import {showMessage} from './util.js';
 
 const LAT_TOKYO = 35.6895;
 const LNG_TOKYO = 139.69171;
 const MAP_SCALE = 12;
+const URL_DOWNLOAD = 'https://23.javascript.pages.academy/keksobooking/data';
 
 const addressField = document.querySelector('#address');
 const adForm = document.querySelector('.ad-form');
@@ -40,7 +42,7 @@ const mainMarker = L.marker(
 const map = L.map('map-canvas')
   .on('load', () => {
     switchToActiveState();
-    renderAds();
+    loadData(URL_DOWNLOAD, getMethod(), renderAdsOnMap, showMessage);
     setValueToAddressField(mainMarker);
   })
   .setView({
@@ -66,7 +68,7 @@ mainMarker.on('move', (evt) => {
 //Show pins of temporary data
 const pinsGroup = L.layerGroup().addTo(map);
 
-const createAdPins = (ad) => {
+const createAdPin = (ad) => {
   const adPin = L.icon({
     iconUrl: 'img/pin.svg',
     iconSize: [40, 40],
@@ -94,11 +96,9 @@ const createAdPins = (ad) => {
   );
 };
 
-const renderAdsOnMap = (ads, createPin) => {
-  ads.forEach((ad) => {
-    createPin(ad);
-  });
-};
+function renderAdsOnMap(ads) {
+  ads.forEach(createAdPin);
+}
 
 //Clear ad form/filters form
 const resetFormFields = () => {
@@ -119,4 +119,4 @@ const resetFormFields = () => {
   }, MAP_SCALE);
 };
 
-export {renderAdsOnMap, createAdPins, resetFormFields};
+export {renderAdsOnMap, resetFormFields};

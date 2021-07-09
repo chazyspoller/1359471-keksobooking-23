@@ -29,21 +29,21 @@ const getSomeRandomElementsWithoutRepeat = (arrayLength, elements) => {
   return randomArray;
 };
 
-const showMessage = (message) => {
+const showMessage = () => {
   const messageContainer = document.createElement('div');
   messageContainer.style.zIndex = 500;
   messageContainer.style.position = 'fixed';
   messageContainer.style.left = '25%';
   messageContainer.style.right = '25%';
   messageContainer.style.top = '30%';
-  messageContainer.style.padding = '15px 5px';
-  messageContainer.style.fontSize = '20px';
-  messageContainer.style.color = 'red';
+  messageContainer.style.padding = '25px 5px';
+  messageContainer.style.fontSize = '30px';
+  messageContainer.style.color = '#f0f0ea';
   messageContainer.style.textAlign = 'center';
-  messageContainer.style.backgroundColor = 'black';
-  messageContainer.style.boxShadow = '0 0 10px 0 grey';
+  messageContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+  messageContainer.style.boxShadow = '0 0 15px 0 grey';
 
-  messageContainer.textContent = message;
+  messageContainer.textContent = 'Ошибка соединения! Обновите страницу.';
 
   document.body.append(messageContainer);
 

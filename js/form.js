@@ -1,5 +1,7 @@
-import {sendData} from './data.js';
 import {resetFormFields} from './map.js';
+import {loadData, getMethod} from './api.js';
+
+const URL_SEND = 'https://23.javascript.pages.academy/keksobooking';
 
 const adForm = document.querySelector('.ad-form');
 const adFilters = document.querySelector('.map__filters');
@@ -53,6 +55,16 @@ const onRoomsSelect = () => {
   updateDependentValidValues(adRoomsSelect.value, adGuestsSelect, RoomsGuestsMap);
 };
 
+const onGuestsSelect = () => {
+  if (adGuestsSelect.value > adRoomsSelect.value) {
+    adGuestsSelect.setCustomValidity('Слишком много гостей.');
+  } else if (adRoomsSelect.value !== '100' && adGuestsSelect.value === '0') {
+    adGuestsSelect.setCustomValidity('Невозможное значение.');
+  } else {
+    adGuestsSelect.setCustomValidity('');
+  }
+};
+
 const onTypesSelect = () => {
   setMinPrice(adTypeSeclect.value, adPriceInput, TypePriceMap);
 };
@@ -83,30 +95,37 @@ addModal(modalError);
 //Submit Form and show a message
 const onKeyDownEsc = (modal, evt) => {
   if (evt.key === 'Escape' || evt.key === 'Esc') {
-    modal.classList.add('hidden');
+    closeModalMessage(modal);
   }
 };
 
 const onClickModal = (modal) => {
-  modal.classList.add('hidden');
+  closeModalMessage(modal);
 };
+
+//Variables for listeners functions
+const onKeyDownEscSuccess = onKeyDownEsc.bind(this, modalSuccess);
+const onKeyDownEscError = onKeyDownEsc.bind(this, modalError);
+const onClickSuccess = onClickModal.bind(this, modalSuccess);
+const onClickError = onClickModal.bind(this, modalError);
 
 const openModalMessage = (modal) => {
   modal.classList.remove('hidden');
-  document.addEventListener('keydown', onKeyDownEsc.bind(this, modal));
-  document.addEventListener('click', onClickModal.bind(this, modal));
+  document.addEventListener('keydown', modal === modalSuccess? onKeyDownEscSuccess: onKeyDownEscError);
+  document.addEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
   if (modal.contains(buttonClosePopup)) {
-    buttonClosePopup.addEventListener('click', onClickModal.bind(this, modal));
+    buttonClosePopup.addEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
   }
 };
 
-const removeModalListeners = (modal) => {
-  document.removeEventListener('keydown', onKeyDownEsc.bind(this, modal));
-  document.removeEventListener('click', onClickModal.bind(this, modal));
+function closeModalMessage(modal) {
+  modal.classList.add('hidden');
+  document.removeEventListener('keydown', modal === modalSuccess? onKeyDownEscSuccess: onKeyDownEscError);
+  document.removeEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
   if (modal.contains(buttonClosePopup)) {
-    buttonClosePopup.removeEventListener('click', onClickModal.bind(this, modal));
+    buttonClosePopup.removeEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
   }
-};
+}
 
 const onSuccessSend = () => {
   openModalMessage(modalSuccess);
@@ -119,13 +138,14 @@ const onErrorSend = () => {
 
 const onSubmitForm = (evt) => {
   evt.preventDefault();
-  sendData(onSuccessSend, onErrorSend, evt);
-  removeModalListeners(modalError);
+  const formData = new FormData(evt.target);
+  loadData(URL_SEND, getMethod(formData), onSuccessSend, onErrorSend);
 };
 
 //Form Listeners
 const addFormListeners = () => {
   adRoomsSelect.addEventListener('input', onRoomsSelect);
+  adGuestsSelect.addEventListener('input', onGuestsSelect);
   adTypeSeclect.addEventListener('input', onTypesSelect);
   adTimeInSelect.addEventListener('input', onTimeInSelect);
   adTimeOutSelect.addEventListener('input', onTimeOutSelect);
@@ -135,6 +155,7 @@ const addFormListeners = () => {
 
 const removeFormListeners = () => {
   adRoomsSelect.removeEventListener('input', onRoomsSelect);
+  adGuestsSelect.removeEventListener('input', onGuestsSelect);
   adTypeSeclect.removeEventListener('input', onTypesSelect);
   adTimeInSelect.removeEventListener('input', onTimeInSelect);
   adTimeOutSelect.removeEventListener('input', onTimeOutSelect);
