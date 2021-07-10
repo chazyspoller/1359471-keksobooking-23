@@ -1,17 +1,17 @@
 import {switchToActiveState, switchToInactiveState} from './form.js';
-import {createAds} from './temporary-data.js';
+import {loadData, getMethod} from './api.js';
 import {generateCard} from './cards.js';
+import {showMessage} from './util.js';
 
 const LAT_TOKYO = 35.6895;
 const LNG_TOKYO = 139.69171;
 const MAP_SCALE = 12;
+const URL_DOWNLOAD = 'https://23.javascript.pages.academy/keksobooking/data';
 
-const setOfAds = createAds();
 const addressField = document.querySelector('#address');
 const adForm = document.querySelector('.ad-form');
 const adFilters = document.querySelector('.map__filters');
 const adPriceInput = adForm.querySelector('#price');
-const clearBtn = document.querySelector('.ad-form__reset');
 
 switchToInactiveState();
 
@@ -42,6 +42,7 @@ const mainMarker = L.marker(
 const map = L.map('map-canvas')
   .on('load', () => {
     switchToActiveState();
+    loadData(URL_DOWNLOAD, getMethod(), renderAdsOnMap, showMessage);
     setValueToAddressField(mainMarker);
   })
   .setView({
@@ -67,7 +68,7 @@ mainMarker.on('move', (evt) => {
 //Show pins of temporary data
 const pinsGroup = L.layerGroup().addTo(map);
 
-const createAdPins = (ad) => {
+const createAdPin = (ad) => {
   const adPin = L.icon({
     iconUrl: 'img/pin.svg',
     iconSize: [40, 40],
@@ -95,9 +96,9 @@ const createAdPins = (ad) => {
   );
 };
 
-setOfAds.forEach((ad) => {
-  createAdPins(ad);
-});
+function renderAdsOnMap(ads) {
+  ads.forEach(createAdPin);
+}
 
 //Clear ad form/filters form
 const resetFormFields = () => {
@@ -106,12 +107,6 @@ const resetFormFields = () => {
   adPriceInput.setAttribute('min', 1000);
   adPriceInput.setAttribute('placeholder', 1000);
   setValueToAddressField(mainMarker);
-};
-
-//Add a map cleaning function
-const onClearFormBtn = (evt) => {
-  evt.preventDefault();
-  resetFormFields();
 
   mainMarker.setLatLng({
     lat: LAT_TOKYO,
@@ -123,4 +118,5 @@ const onClearFormBtn = (evt) => {
     lng: LNG_TOKYO,
   }, MAP_SCALE);
 };
-clearBtn.addEventListener('click', onClearFormBtn);
+
+export {renderAdsOnMap, resetFormFields};
