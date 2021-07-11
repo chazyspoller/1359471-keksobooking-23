@@ -17,10 +17,10 @@ const modalError = document.querySelector('#error').content.querySelector('.erro
 const buttonClosePopup = modalError.querySelector('.error__button');
 
 const RoomsGuestsMap = {
-  1: [1],
-  2: [1, 2],
-  3: [1, 2, 3],
-  100: [0],
+  1: ['1'],
+  2: ['1', '2'],
+  3: ['1', '2', '3'],
+  100: ['0'],
 };
 const TypePriceMap = {
   bungalow: 0,
@@ -38,7 +38,6 @@ const updateDependentValidValues = (valueCheck, valueChange, mapList) => {
 
   mapList[valueCheck].forEach((value) => {
     valueChange.querySelector(`option[value="${value}"]`).disabled = false;
-    valueChange.value = value;
   });
 };
 
@@ -51,18 +50,17 @@ const setEqualTime = (timeOne, timeTwo) => {
   timeTwo.value = timeOne.value;
 };
 
-const onRoomsSelect = () => {
-  updateDependentValidValues(adRoomsSelect.value, adGuestsSelect, RoomsGuestsMap);
-};
-
 const onGuestsSelect = () => {
-  if (adGuestsSelect.value > adRoomsSelect.value) {
-    adGuestsSelect.setCustomValidity('Слишком много гостей.');
-  } else if (adRoomsSelect.value !== '100' && adGuestsSelect.value === '0') {
-    adGuestsSelect.setCustomValidity('Невозможное значение.');
+  if (RoomsGuestsMap[adRoomsSelect.value].indexOf(adGuestsSelect.value) === -1) {
+    adGuestsSelect.setCustomValidity('Укажите допустимое количество гостей.');
   } else {
     adGuestsSelect.setCustomValidity('');
   }
+};
+
+const onRoomsSelect = () => {
+  updateDependentValidValues(adRoomsSelect.value, adGuestsSelect, RoomsGuestsMap);
+  onGuestsSelect();
 };
 
 const onTypesSelect = () => {
@@ -145,7 +143,7 @@ const onSubmitForm = (evt) => {
 //Form Listeners
 const addFormListeners = () => {
   adRoomsSelect.addEventListener('input', onRoomsSelect);
-  adGuestsSelect.addEventListener('input', onGuestsSelect);
+  adGuestsSelect.addEventListener('change', onGuestsSelect);
   adTypeSeclect.addEventListener('input', onTypesSelect);
   adTimeInSelect.addEventListener('input', onTimeInSelect);
   adTimeOutSelect.addEventListener('input', onTimeOutSelect);
@@ -155,7 +153,7 @@ const addFormListeners = () => {
 
 const removeFormListeners = () => {
   adRoomsSelect.removeEventListener('input', onRoomsSelect);
-  adGuestsSelect.removeEventListener('input', onGuestsSelect);
+  adGuestsSelect.removeEventListener('change', onGuestsSelect);
   adTypeSeclect.removeEventListener('input', onTypesSelect);
   adTimeInSelect.removeEventListener('input', onTimeInSelect);
   adTimeOutSelect.removeEventListener('input', onTimeOutSelect);
