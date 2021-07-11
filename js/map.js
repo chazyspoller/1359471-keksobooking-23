@@ -1,5 +1,5 @@
 import {switchToActiveState, switchToInactiveState} from './form.js';
-import {loadData, getMethod} from './api.js';
+import {loadData} from './api.js';
 import {generateCard} from './cards.js';
 import {showMessage} from './util.js';
 
@@ -42,7 +42,7 @@ const mainMarker = L.marker(
 const map = L.map('map-canvas')
   .on('load', () => {
     switchToActiveState();
-    loadData(URL_DOWNLOAD, getMethod(), renderAdsOnMap, showMessage);
+    loadData(URL_DOWNLOAD, {method: 'GET'}, renderAdsOnMap, showMessage);
     setValueToAddressField(mainMarker);
   })
   .setView({

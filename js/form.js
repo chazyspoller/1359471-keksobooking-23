@@ -1,5 +1,5 @@
 import {resetFormFields} from './map.js';
-import {loadData, getMethod} from './api.js';
+import {loadData} from './api.js';
 
 const URL_SEND = 'https://23.javascript.pages.academy/keksobooking';
 
@@ -76,7 +76,7 @@ const onTimeOutSelect = () => {
 };
 
 //Add a map cleaning function
-const onClearFormBtn = (evt) => {
+const onClearFormBtnClick = (evt) => {
   evt.preventDefault();
   resetFormFields();
 };
@@ -91,25 +91,25 @@ addModal(modalSuccess);
 addModal(modalError);
 
 //Submit Form and show a message
-const onKeyDownEsc = (modal, evt) => {
+const onEscKeyDown = (modal, evt) => {
   if (evt.key === 'Escape' || evt.key === 'Esc') {
     closeModalMessage(modal);
   }
 };
 
-const onClickModal = (modal) => {
+const onModalClick = (modal) => {
   closeModalMessage(modal);
 };
 
 //Variables for listeners functions
-const onKeyDownEscSuccess = onKeyDownEsc.bind(this, modalSuccess);
-const onKeyDownEscError = onKeyDownEsc.bind(this, modalError);
-const onClickSuccess = onClickModal.bind(this, modalSuccess);
-const onClickError = onClickModal.bind(this, modalError);
+const onEscKeyDownSuccess = onEscKeyDown.bind(this, modalSuccess);
+const onEscKeyDownError = onEscKeyDown.bind(this, modalError);
+const onClickSuccess = onModalClick.bind(this, modalSuccess);
+const onClickError = onModalClick.bind(this, modalError);
 
 const openModalMessage = (modal) => {
   modal.classList.remove('hidden');
-  document.addEventListener('keydown', modal === modalSuccess? onKeyDownEscSuccess: onKeyDownEscError);
+  document.addEventListener('keydown', modal === modalSuccess? onEscKeyDownSuccess: onEscKeyDownError);
   document.addEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
   if (modal.contains(buttonClosePopup)) {
     buttonClosePopup.addEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
@@ -118,7 +118,7 @@ const openModalMessage = (modal) => {
 
 function closeModalMessage(modal) {
   modal.classList.add('hidden');
-  document.removeEventListener('keydown', modal === modalSuccess? onKeyDownEscSuccess: onKeyDownEscError);
+  document.removeEventListener('keydown', modal === modalSuccess? onEscKeyDownSuccess: onEscKeyDownError);
   document.removeEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
   if (modal.contains(buttonClosePopup)) {
     buttonClosePopup.removeEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
@@ -134,10 +134,10 @@ const onErrorSend = () => {
   openModalMessage(modalError);
 };
 
-const onSubmitForm = (evt) => {
+const onFormSubmit = (evt) => {
   evt.preventDefault();
   const formData = new FormData(evt.target);
-  loadData(URL_SEND, getMethod(formData), onSuccessSend, onErrorSend);
+  loadData(URL_SEND, {method: 'POST', body: formData}, onSuccessSend, onErrorSend);
 };
 
 //Form Listeners
@@ -147,8 +147,8 @@ const addFormListeners = () => {
   adTypeSeclect.addEventListener('input', onTypesSelect);
   adTimeInSelect.addEventListener('input', onTimeInSelect);
   adTimeOutSelect.addEventListener('input', onTimeOutSelect);
-  adForm.addEventListener('submit', onSubmitForm);
-  clearBtn.addEventListener('click', onClearFormBtn);
+  adForm.addEventListener('submit', onFormSubmit);
+  clearBtn.addEventListener('click', onClearFormBtnClick);
 };
 
 const removeFormListeners = () => {
@@ -157,8 +157,8 @@ const removeFormListeners = () => {
   adTypeSeclect.removeEventListener('input', onTypesSelect);
   adTimeInSelect.removeEventListener('input', onTimeInSelect);
   adTimeOutSelect.removeEventListener('input', onTimeOutSelect);
-  adForm.removeEventListener('submit', onSubmitForm);
-  clearBtn.removeEventListener('click', onClearFormBtn);
+  adForm.removeEventListener('submit', onFormSubmit);
+  clearBtn.removeEventListener('click', onClearFormBtnClick);
 };
 
 //Activation/Disactivation of form
