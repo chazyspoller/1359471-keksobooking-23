@@ -175,10 +175,13 @@ const switchToInactiveState = () => {
   removeFormListeners();
 };
 
-const switchToActiveState = () => {
+const switchFormToActiveState = () => {
   changeDisabledStatusOfElementWithChildren(adForm, 'ad-form--disabled', false, 'remove');
-  changeDisabledStatusOfElementWithChildren(adFilters, 'map__filters--disabled', false, 'remove');
   addFormListeners();
 };
 
-export {switchToActiveState, switchToInactiveState};
+const switchFiltersToActiveState = () => {
+  changeDisabledStatusOfElementWithChildren(adFilters, 'map__filters--disabled', false, 'remove');
+};
+
+export {switchFormToActiveState, switchFiltersToActiveState, switchToInactiveState};

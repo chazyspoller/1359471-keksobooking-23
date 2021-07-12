@@ -43,7 +43,7 @@ const showMessage = () => {
   messageContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
   messageContainer.style.boxShadow = '0 0 15px 0 grey';
 
-  messageContainer.textContent = 'Ошибка соединения! Обновите страницу.';
+  messageContainer.textContent = 'Ошибка соединения! Обновите страницу для загрузки данных.';
 
   document.body.append(messageContainer);
 

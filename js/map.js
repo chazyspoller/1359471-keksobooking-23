@@ -1,12 +1,16 @@
-import {switchToActiveState, switchToInactiveState} from './form.js';
+import {debounce} from './utils/debounce.js';
+import {switchFormToActiveState, switchFiltersToActiveState, switchToInactiveState} from './form.js';
 import {loadData} from './api.js';
 import {generateCard} from './cards.js';
 import {showMessage} from './util.js';
+import {addFiltersSelectListeners, filtrationByType, filtrationByRooms, filtrationByGuests, filtrationByPrice, getAdsRankByFeatures} from './filters.js';
 
 const LAT_TOKYO = 35.6895;
 const LNG_TOKYO = 139.69171;
 const MAP_SCALE = 12;
 const URL_DOWNLOAD = 'https://23.javascript.pages.academy/keksobooking/data';
+const MAX_ADS_SHOWN = 10;
+const RERENDER_DELAY = 500;
 
 const addressField = document.querySelector('#address');
 const adForm = document.querySelector('.ad-form');
@@ -38,11 +42,19 @@ const mainMarker = L.marker(
   },
 );
 
+const renderCallback = (ads) => debounce(() => renderAdsOnMap(ads), RERENDER_DELAY);
+
+const renderTenAdsWithFilters = (ads) => {
+  renderAdsOnMap(ads);
+  switchFiltersToActiveState();
+  addFiltersSelectListeners(renderCallback(ads));
+};
+
 //Map initialisation
 const map = L.map('map-canvas')
   .on('load', () => {
-    switchToActiveState();
-    loadData(URL_DOWNLOAD, {method: 'GET'}, renderAdsOnMap, showMessage);
+    loadData(URL_DOWNLOAD, {method: 'GET'}, renderTenAdsWithFilters, showMessage);
+    switchFormToActiveState();
     setValueToAddressField(mainMarker);
   })
   .setView({
@@ -66,7 +78,7 @@ mainMarker.on('move', (evt) => {
 });
 
 //Show pins of temporary data
-const pinsGroup = L.layerGroup().addTo(map);
+let pinsGroup = L.layerGroup().addTo(map);
 
 const createAdPin = (ad) => {
   const adPin = L.icon({
@@ -97,7 +109,18 @@ const createAdPin = (ad) => {
 };
 
 function renderAdsOnMap(ads) {
-  ads.forEach(createAdPin);
+  map.removeLayer(pinsGroup);
+  pinsGroup = L.layerGroup().addTo(map);
+
+  ads
+    .slice()
+    .filter(filtrationByType)
+    .filter(filtrationByRooms)
+    .filter(filtrationByPrice)
+    .filter(filtrationByGuests)
+    .filter(getAdsRankByFeatures)
+    .slice(0, MAX_ADS_SHOWN)
+    .forEach(createAdPin);
 }
 
 //Clear ad form/filters form
@@ -119,4 +142,4 @@ const resetFormFields = () => {
   }, MAP_SCALE);
 };
 
-export {renderAdsOnMap, resetFormFields};
+export {renderAdsOnMap, resetFormFields, renderCallback};
