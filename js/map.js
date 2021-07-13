@@ -1,9 +1,9 @@
-import {debounce} from './utils/debounce.js';
+import {debounce} from './util.js';
 import {switchFormToActiveState, switchFiltersToActiveState, switchToInactiveState} from './form.js';
 import {loadData} from './api.js';
 import {generateCard} from './cards.js';
 import {showMessage} from './util.js';
-import {addFiltersSelectListeners, filtrationByType, filtrationByRooms, filtrationByGuests, filtrationByPrice, getAdsRankByFeatures} from './filters.js';
+import {addFiltersSelectListener, filterByType, filterByRooms, filterByGuests, filterByPrice, filterByFeatures} from './filters.js';
 
 const LAT_TOKYO = 35.6895;
 const LNG_TOKYO = 139.69171;
@@ -16,7 +16,8 @@ const addressField = document.querySelector('#address');
 const adForm = document.querySelector('.ad-form');
 const adFilters = document.querySelector('.map__filters');
 const adPriceInput = adForm.querySelector('#price');
-
+let data;
+let filtersCallback;
 switchToInactiveState();
 
 const setValueToAddressField = (marker) => {
@@ -42,18 +43,19 @@ const mainMarker = L.marker(
   },
 );
 
-const renderCallback = (ads) => debounce(() => renderAdsOnMap(ads), RERENDER_DELAY);
+const renderFiltersCallback = (ads) => debounce(() => renderAdsOnMap(ads), RERENDER_DELAY);
 
-const renderTenAdsWithFilters = (ads) => {
-  renderAdsOnMap(ads);
+const renderSeveralAdsWithFilters = (ads) => {
+  data = renderAdsOnMap(ads);
   switchFiltersToActiveState();
-  addFiltersSelectListeners(renderCallback(ads));
+  filtersCallback = renderFiltersCallback(ads);
+  addFiltersSelectListener(filtersCallback);
 };
 
 //Map initialisation
 const map = L.map('map-canvas')
   .on('load', () => {
-    loadData(URL_DOWNLOAD, {method: 'GET'}, renderTenAdsWithFilters, showMessage);
+    loadData(URL_DOWNLOAD, {method: 'GET'}, renderSeveralAdsWithFilters, showMessage);
     switchFormToActiveState();
     setValueToAddressField(mainMarker);
   })
@@ -111,16 +113,16 @@ const createAdPin = (ad) => {
 function renderAdsOnMap(ads) {
   map.removeLayer(pinsGroup);
   pinsGroup = L.layerGroup().addTo(map);
-
   ads
     .slice()
-    .filter(filtrationByType)
-    .filter(filtrationByRooms)
-    .filter(filtrationByPrice)
-    .filter(filtrationByGuests)
-    .filter(getAdsRankByFeatures)
+    .filter(filterByType)
+    .filter(filterByRooms)
+    .filter(filterByPrice)
+    .filter(filterByGuests)
+    .filter(filterByFeatures)
     .slice(0, MAX_ADS_SHOWN)
     .forEach(createAdPin);
+  return ads;
 }
 
 //Clear ad form/filters form
@@ -130,6 +132,7 @@ const resetFormFields = () => {
   adPriceInput.setAttribute('min', 1000);
   adPriceInput.setAttribute('placeholder', 1000);
   setValueToAddressField(mainMarker);
+  renderSeveralAdsWithFilters(data);
 
   mainMarker.setLatLng({
     lat: LAT_TOKYO,
@@ -142,4 +145,4 @@ const resetFormFields = () => {
   }, MAP_SCALE);
 };
 
-export {renderAdsOnMap, resetFormFields, renderCallback};
+export {resetFormFields, filtersCallback};

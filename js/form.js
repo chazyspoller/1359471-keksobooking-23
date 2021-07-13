@@ -1,5 +1,6 @@
-import {resetFormFields} from './map.js';
+import {resetFormFields, filtersCallback} from './map.js';
 import {loadData} from './api.js';
+import {removeFiltersSelectListener} from './filters.js';
 
 const URL_SEND = 'https://23.javascript.pages.academy/keksobooking';
 
@@ -109,19 +110,19 @@ const onClickError = onModalClick.bind(this, modalError);
 
 const openModalMessage = (modal) => {
   modal.classList.remove('hidden');
-  document.addEventListener('keydown', modal === modalSuccess? onEscKeyDownSuccess: onEscKeyDownError);
-  document.addEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
+  document.addEventListener('keydown', modal === modalSuccess ? onEscKeyDownSuccess : onEscKeyDownError);
+  document.addEventListener('click', modal === modalSuccess ? onClickSuccess : onClickError);
   if (modal.contains(buttonClosePopup)) {
-    buttonClosePopup.addEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
+    buttonClosePopup.addEventListener('click', modal === modalSuccess ? onClickSuccess : onClickError);
   }
 };
 
 function closeModalMessage(modal) {
   modal.classList.add('hidden');
-  document.removeEventListener('keydown', modal === modalSuccess? onEscKeyDownSuccess: onEscKeyDownError);
-  document.removeEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
+  document.removeEventListener('keydown', modal === modalSuccess ? onEscKeyDownSuccess : onEscKeyDownError);
+  document.removeEventListener('click', modal === modalSuccess ? onClickSuccess : onClickError);
   if (modal.contains(buttonClosePopup)) {
-    buttonClosePopup.removeEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
+    buttonClosePopup.removeEventListener('click', modal === modalSuccess ? onClickSuccess : onClickError);
   }
 }
 
@@ -159,6 +160,7 @@ const removeFormListeners = () => {
   adTimeOutSelect.removeEventListener('input', onTimeOutSelect);
   adForm.removeEventListener('submit', onFormSubmit);
   clearBtn.removeEventListener('click', onClearFormBtnClick);
+  removeFiltersSelectListener(filtersCallback);
 };
 
 //Activation/Disactivation of form
