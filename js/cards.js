@@ -129,7 +129,7 @@ const renderElements = (elementsData, template, callback, newElement) => {
 
 const setContent = (valueToCheck, element, elementProperty = 'textContent', valueToSet) => {
   if (!checkIsEmpty(valueToCheck, element)) {
-    element[elementProperty] = valueToSet? valueToSet: valueToCheck;
+    element[elementProperty] = valueToSet ? valueToSet : valueToCheck;
   }
 };
 

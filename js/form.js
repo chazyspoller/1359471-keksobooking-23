@@ -1,5 +1,6 @@
-import {resetFormFields} from './map.js';
-import {loadData, getMethod} from './api.js';
+import {resetFormFields, filtersCallback} from './map.js';
+import {loadData} from './api.js';
+import {removeFiltersSelectListener} from './filters.js';
 
 const URL_SEND = 'https://23.javascript.pages.academy/keksobooking';
 
@@ -17,10 +18,10 @@ const modalError = document.querySelector('#error').content.querySelector('.erro
 const buttonClosePopup = modalError.querySelector('.error__button');
 
 const RoomsGuestsMap = {
-  1: [1],
-  2: [1, 2],
-  3: [1, 2, 3],
-  100: [0],
+  1: ['1'],
+  2: ['1', '2'],
+  3: ['1', '2', '3'],
+  100: ['0'],
 };
 const TypePriceMap = {
   bungalow: 0,
@@ -38,7 +39,6 @@ const updateDependentValidValues = (valueCheck, valueChange, mapList) => {
 
   mapList[valueCheck].forEach((value) => {
     valueChange.querySelector(`option[value="${value}"]`).disabled = false;
-    valueChange.value = value;
   });
 };
 
@@ -51,18 +51,17 @@ const setEqualTime = (timeOne, timeTwo) => {
   timeTwo.value = timeOne.value;
 };
 
-const onRoomsSelect = () => {
-  updateDependentValidValues(adRoomsSelect.value, adGuestsSelect, RoomsGuestsMap);
-};
-
 const onGuestsSelect = () => {
-  if (adGuestsSelect.value > adRoomsSelect.value) {
-    adGuestsSelect.setCustomValidity('Слишком много гостей.');
-  } else if (adRoomsSelect.value !== '100' && adGuestsSelect.value === '0') {
-    adGuestsSelect.setCustomValidity('Невозможное значение.');
+  if (RoomsGuestsMap[adRoomsSelect.value].indexOf(adGuestsSelect.value) === -1) {
+    adGuestsSelect.setCustomValidity('Укажите допустимое количество гостей.');
   } else {
     adGuestsSelect.setCustomValidity('');
   }
+};
+
+const onRoomsSelect = () => {
+  updateDependentValidValues(adRoomsSelect.value, adGuestsSelect, RoomsGuestsMap);
+  onGuestsSelect();
 };
 
 const onTypesSelect = () => {
@@ -78,7 +77,7 @@ const onTimeOutSelect = () => {
 };
 
 //Add a map cleaning function
-const onClearFormBtn = (evt) => {
+const onClearFormBtnClick = (evt) => {
   evt.preventDefault();
   resetFormFields();
 };
@@ -93,37 +92,37 @@ addModal(modalSuccess);
 addModal(modalError);
 
 //Submit Form and show a message
-const onKeyDownEsc = (modal, evt) => {
+const onEscKeyDown = (modal, evt) => {
   if (evt.key === 'Escape' || evt.key === 'Esc') {
     closeModalMessage(modal);
   }
 };
 
-const onClickModal = (modal) => {
+const onModalClick = (modal) => {
   closeModalMessage(modal);
 };
 
 //Variables for listeners functions
-const onKeyDownEscSuccess = onKeyDownEsc.bind(this, modalSuccess);
-const onKeyDownEscError = onKeyDownEsc.bind(this, modalError);
-const onClickSuccess = onClickModal.bind(this, modalSuccess);
-const onClickError = onClickModal.bind(this, modalError);
+const onEscKeyDownSuccess = onEscKeyDown.bind(this, modalSuccess);
+const onEscKeyDownError = onEscKeyDown.bind(this, modalError);
+const onClickSuccess = onModalClick.bind(this, modalSuccess);
+const onClickError = onModalClick.bind(this, modalError);
 
 const openModalMessage = (modal) => {
   modal.classList.remove('hidden');
-  document.addEventListener('keydown', modal === modalSuccess? onKeyDownEscSuccess: onKeyDownEscError);
-  document.addEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
+  document.addEventListener('keydown', modal === modalSuccess ? onEscKeyDownSuccess : onEscKeyDownError);
+  document.addEventListener('click', modal === modalSuccess ? onClickSuccess : onClickError);
   if (modal.contains(buttonClosePopup)) {
-    buttonClosePopup.addEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
+    buttonClosePopup.addEventListener('click', modal === modalSuccess ? onClickSuccess : onClickError);
   }
 };
 
 function closeModalMessage(modal) {
   modal.classList.add('hidden');
-  document.removeEventListener('keydown', modal === modalSuccess? onKeyDownEscSuccess: onKeyDownEscError);
-  document.removeEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
+  document.removeEventListener('keydown', modal === modalSuccess ? onEscKeyDownSuccess : onEscKeyDownError);
+  document.removeEventListener('click', modal === modalSuccess ? onClickSuccess : onClickError);
   if (modal.contains(buttonClosePopup)) {
-    buttonClosePopup.removeEventListener('click', modal === modalSuccess? onClickSuccess: onClickError);
+    buttonClosePopup.removeEventListener('click', modal === modalSuccess ? onClickSuccess : onClickError);
   }
 }
 
@@ -136,31 +135,32 @@ const onErrorSend = () => {
   openModalMessage(modalError);
 };
 
-const onSubmitForm = (evt) => {
+const onFormSubmit = (evt) => {
   evt.preventDefault();
   const formData = new FormData(evt.target);
-  loadData(URL_SEND, getMethod(formData), onSuccessSend, onErrorSend);
+  loadData(URL_SEND, {method: 'POST', body: formData}, onSuccessSend, onErrorSend);
 };
 
 //Form Listeners
 const addFormListeners = () => {
   adRoomsSelect.addEventListener('input', onRoomsSelect);
-  adGuestsSelect.addEventListener('input', onGuestsSelect);
+  adGuestsSelect.addEventListener('change', onGuestsSelect);
   adTypeSeclect.addEventListener('input', onTypesSelect);
   adTimeInSelect.addEventListener('input', onTimeInSelect);
   adTimeOutSelect.addEventListener('input', onTimeOutSelect);
-  adForm.addEventListener('submit', onSubmitForm);
-  clearBtn.addEventListener('click', onClearFormBtn);
+  adForm.addEventListener('submit', onFormSubmit);
+  clearBtn.addEventListener('click', onClearFormBtnClick);
 };
 
 const removeFormListeners = () => {
   adRoomsSelect.removeEventListener('input', onRoomsSelect);
-  adGuestsSelect.removeEventListener('input', onGuestsSelect);
+  adGuestsSelect.removeEventListener('change', onGuestsSelect);
   adTypeSeclect.removeEventListener('input', onTypesSelect);
   adTimeInSelect.removeEventListener('input', onTimeInSelect);
   adTimeOutSelect.removeEventListener('input', onTimeOutSelect);
-  adForm.removeEventListener('submit', onSubmitForm);
-  clearBtn.removeEventListener('click', onClearFormBtn);
+  adForm.removeEventListener('submit', onFormSubmit);
+  clearBtn.removeEventListener('click', onClearFormBtnClick);
+  removeFiltersSelectListener(filtersCallback);
 };
 
 //Activation/Disactivation of form
@@ -177,10 +177,13 @@ const switchToInactiveState = () => {
   removeFormListeners();
 };
 
-const switchToActiveState = () => {
+const switchFormToActiveState = () => {
   changeDisabledStatusOfElementWithChildren(adForm, 'ad-form--disabled', false, 'remove');
-  changeDisabledStatusOfElementWithChildren(adFilters, 'map__filters--disabled', false, 'remove');
   addFormListeners();
 };
 
-export {switchToActiveState, switchToInactiveState};
+const switchFiltersToActiveState = () => {
+  changeDisabledStatusOfElementWithChildren(adFilters, 'map__filters--disabled', false, 'remove');
+};
+
+export {switchFormToActiveState, switchFiltersToActiveState, switchToInactiveState};

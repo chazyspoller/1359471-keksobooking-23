@@ -1,18 +1,23 @@
-import {switchToActiveState, switchToInactiveState} from './form.js';
-import {loadData, getMethod} from './api.js';
+import {debounce} from './util.js';
+import {switchFormToActiveState, switchFiltersToActiveState, switchToInactiveState} from './form.js';
+import {loadData} from './api.js';
 import {generateCard} from './cards.js';
 import {showMessage} from './util.js';
+import {addFiltersSelectListener, filterByType, filterByRooms, filterByGuests, filterByPrice, filterByFeatures} from './filters.js';
 
 const LAT_TOKYO = 35.6895;
 const LNG_TOKYO = 139.69171;
 const MAP_SCALE = 12;
 const URL_DOWNLOAD = 'https://23.javascript.pages.academy/keksobooking/data';
+const MAX_ADS_SHOWN = 10;
+const RERENDER_DELAY = 500;
 
 const addressField = document.querySelector('#address');
 const adForm = document.querySelector('.ad-form');
 const adFilters = document.querySelector('.map__filters');
 const adPriceInput = adForm.querySelector('#price');
-
+let data;
+let filtersCallback;
 switchToInactiveState();
 
 const setValueToAddressField = (marker) => {
@@ -38,11 +43,20 @@ const mainMarker = L.marker(
   },
 );
 
+const renderFiltersCallback = (ads) => debounce(() => renderAdsOnMap(ads), RERENDER_DELAY);
+
+const renderSeveralAdsWithFilters = (ads) => {
+  data = renderAdsOnMap(ads);
+  switchFiltersToActiveState();
+  filtersCallback = renderFiltersCallback(ads);
+  addFiltersSelectListener(filtersCallback);
+};
+
 //Map initialisation
 const map = L.map('map-canvas')
   .on('load', () => {
-    switchToActiveState();
-    loadData(URL_DOWNLOAD, getMethod(), renderAdsOnMap, showMessage);
+    loadData(URL_DOWNLOAD, {method: 'GET'}, renderSeveralAdsWithFilters, showMessage);
+    switchFormToActiveState();
     setValueToAddressField(mainMarker);
   })
   .setView({
@@ -66,7 +80,7 @@ mainMarker.on('move', (evt) => {
 });
 
 //Show pins of temporary data
-const pinsGroup = L.layerGroup().addTo(map);
+let pinsGroup = L.layerGroup().addTo(map);
 
 const createAdPin = (ad) => {
   const adPin = L.icon({
@@ -97,7 +111,18 @@ const createAdPin = (ad) => {
 };
 
 function renderAdsOnMap(ads) {
-  ads.forEach(createAdPin);
+  map.removeLayer(pinsGroup);
+  pinsGroup = L.layerGroup().addTo(map);
+  ads
+    .slice()
+    .filter(filterByType)
+    .filter(filterByRooms)
+    .filter(filterByPrice)
+    .filter(filterByGuests)
+    .filter(filterByFeatures)
+    .slice(0, MAX_ADS_SHOWN)
+    .forEach(createAdPin);
+  return ads;
 }
 
 //Clear ad form/filters form
@@ -107,6 +132,7 @@ const resetFormFields = () => {
   adPriceInput.setAttribute('min', 1000);
   adPriceInput.setAttribute('placeholder', 1000);
   setValueToAddressField(mainMarker);
+  renderSeveralAdsWithFilters(data);
 
   mainMarker.setLatLng({
     lat: LAT_TOKYO,
@@ -119,4 +145,4 @@ const resetFormFields = () => {
   }, MAP_SCALE);
 };
 
-export {renderAdsOnMap, resetFormFields};
+export {resetFormFields, filtersCallback};

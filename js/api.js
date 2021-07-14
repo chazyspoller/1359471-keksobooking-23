@@ -1,5 +1,3 @@
-const getMethod = (data) => data? {method: 'POST', body: data}: {method: 'GET'};
-
 const loadData = (url, method, onSuccess, onError) => {
   fetch(url, method)
     .then((response) => {
@@ -17,4 +15,4 @@ const loadData = (url, method, onSuccess, onError) => {
     });
 };
 
-export {loadData, getMethod};
+export {loadData};
