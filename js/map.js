@@ -4,6 +4,7 @@ import {loadData} from './api.js';
 import {generateCard} from './cards.js';
 import {showMessage} from './util.js';
 import {addFiltersSelectListener, filterByType, filterByRooms, filterByGuests, filterByPrice, filterByFeatures} from './filters.js';
+import {resetPhotos} from './avatar.js';
 
 const LAT_TOKYO = 35.6895;
 const LNG_TOKYO = 139.69171;
@@ -133,6 +134,7 @@ const resetFormFields = () => {
   adPriceInput.setAttribute('placeholder', 1000);
   setValueToAddressField(mainMarker);
   renderSeveralAdsWithFilters(data);
+  resetPhotos();
 
   mainMarker.setLatLng({
     lat: LAT_TOKYO,

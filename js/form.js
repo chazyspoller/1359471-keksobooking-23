@@ -1,6 +1,7 @@
 import {resetFormFields, filtersCallback} from './map.js';
 import {loadData} from './api.js';
 import {removeFiltersSelectListener} from './filters.js';
+import {addLoadPhotoListeners, removeLoadPhotoListeners} from './avatar.js';
 
 const URL_SEND = 'https://23.javascript.pages.academy/keksobooking';
 
@@ -150,6 +151,7 @@ const addFormListeners = () => {
   adTimeOutSelect.addEventListener('input', onTimeOutSelect);
   adForm.addEventListener('submit', onFormSubmit);
   clearBtn.addEventListener('click', onClearFormBtnClick);
+  addLoadPhotoListeners();
 };
 
 const removeFormListeners = () => {
@@ -160,6 +162,7 @@ const removeFormListeners = () => {
   adTimeOutSelect.removeEventListener('input', onTimeOutSelect);
   adForm.removeEventListener('submit', onFormSubmit);
   clearBtn.removeEventListener('click', onClearFormBtnClick);
+  removeLoadPhotoListeners();
   removeFiltersSelectListener(filtersCallback);
 };
 
