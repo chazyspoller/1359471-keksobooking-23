@@ -1,5 +1,5 @@
 import {debounce} from './util.js';
-import {switchFormToActiveState, switchFiltersToActiveState, switchToInactiveState} from './form.js';
+import {switchFormToActiveState, switchFiltersToActiveState, switchToInactiveState} from './page.js';
 import {loadData} from './api.js';
 import {generateCard} from './cards.js';
 import {showMessage} from './util.js';
