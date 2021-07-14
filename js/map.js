@@ -1,4 +1,3 @@
-import {debounce} from './util.js';
 import {switchFormToActiveState, switchFiltersToActiveState, switchToInactiveState} from './page.js';
 import {loadData} from './api.js';
 import {generateCard} from './cards.js';
@@ -11,14 +10,12 @@ const LNG_TOKYO = 139.69171;
 const MAP_SCALE = 12;
 const URL_DOWNLOAD = 'https://23.javascript.pages.academy/keksobooking/data';
 const MAX_ADS_SHOWN = 10;
-const RERENDER_DELAY = 500;
 
 const addressField = document.querySelector('#address');
 const adForm = document.querySelector('.ad-form');
 const adFilters = document.querySelector('.map__filters');
 const adPriceInput = adForm.querySelector('#price');
 let data;
-let filtersCallback;
 switchToInactiveState();
 
 const setValueToAddressField = (marker) => {
@@ -44,13 +41,10 @@ const mainMarker = L.marker(
   },
 );
 
-const renderFiltersCallback = (ads) => debounce(() => renderAdsOnMap(ads), RERENDER_DELAY);
-
 const renderSeveralAdsWithFilters = (ads) => {
   data = renderAdsOnMap(ads);
   switchFiltersToActiveState();
-  filtersCallback = renderFiltersCallback(ads);
-  addFiltersSelectListener(filtersCallback);
+  addFiltersSelectListener(ads);
 };
 
 //Map initialisation
@@ -133,7 +127,7 @@ const resetFormFields = () => {
   adPriceInput.setAttribute('min', 1000);
   adPriceInput.setAttribute('placeholder', 1000);
   setValueToAddressField(mainMarker);
-  renderSeveralAdsWithFilters(data);
+  renderAdsOnMap(data);
   resetPhotos();
 
   mainMarker.setLatLng({
@@ -147,4 +141,4 @@ const resetFormFields = () => {
   }, MAP_SCALE);
 };
 
-export {resetFormFields, filtersCallback};
+export {renderAdsOnMap, resetFormFields};

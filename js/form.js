@@ -1,4 +1,4 @@
-import {resetFormFields, filtersCallback} from './map.js';
+import {resetFormFields} from './map.js';
 import {loadData} from './api.js';
 import {removeFiltersSelectListener} from './filters.js';
 import {addLoadPhotoListeners, removeLoadPhotoListeners} from './avatar.js';
@@ -162,7 +162,7 @@ const removeFormListeners = () => {
   adForm.removeEventListener('submit', onFormSubmit);
   clearBtn.removeEventListener('click', onClearFormBtnClick);
   removeLoadPhotoListeners();
-  removeFiltersSelectListener(filtersCallback);
+  removeFiltersSelectListener();
 };
 
 export {addFormListeners, removeFormListeners};
