@@ -17,7 +17,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "eslint-config": "^0.3.0"
+    "eslint-config": "0.3.0"
   },
   "scripts": {
     "start": "browser-sync start --server --no-ui --files \"js/**/*.js\"",

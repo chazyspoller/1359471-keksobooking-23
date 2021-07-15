@@ -1,9 +1,15 @@
+import {debounce} from './util.js';
+import {renderAdsOnMap} from './map.js';
+
+const RERENDER_DELAY = 500;
+
 const filtersForm = document.querySelector('.map__filters');
 const typeFilterField = document.querySelector('#housing-type');
 const priceFilterField = document.querySelector('#housing-price');
 const roomsFilterField = document.querySelector('#housing-rooms');
 const guestsFilterField = document.querySelector('#housing-guests');
 const featuresFilterField = document.querySelectorAll('.map__checkbox');
+let onFiltersChange;
 
 const getPriceType = (price) => {
   if (price < 10000) {
@@ -38,12 +44,15 @@ const filterByFeatures = (ad) => {
   }
 };
 
-const addFiltersSelectListener = (callback) => {
-  filtersForm.addEventListener('change', callback);
+const renderFiltersCallback = debounce(renderAdsOnMap, RERENDER_DELAY);
+
+const addFiltersSelectListener = (ads) => {
+  onFiltersChange = () => renderFiltersCallback(ads);
+  filtersForm.addEventListener('change', onFiltersChange);
 };
 
-const removeFiltersSelectListener = (callback) => {
-  filtersForm.removeEventListener('change', callback);
+const removeFiltersSelectListener = () => {
+  filtersForm.removeEventListener('change', onFiltersChange);
 };
 
 export {addFiltersSelectListener, removeFiltersSelectListener, filterByType, filterByRooms, filterByGuests, filterByPrice, filterByFeatures};
