@@ -17,13 +17,13 @@ const modalSuccess = document.querySelector('#success').content.querySelector('.
 const modalError = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
 const buttonClosePopup = modalError.querySelector('.error__button');
 
-const RoomsGuestsMap = {
+const roomsGuestsMap = {
   1: ['1'],
   2: ['1', '2'],
   3: ['1', '2', '3'],
   100: ['0'],
 };
-const TypePriceMap = {
+const typePriceMap = {
   bungalow: 0,
   flat: 1000,
   hotel: 3000,
@@ -52,7 +52,7 @@ const setEqualTime = (timeOne, timeTwo) => {
 };
 
 const onGuestsSelect = () => {
-  if (RoomsGuestsMap[adRoomsSelect.value].indexOf(adGuestsSelect.value) === -1) {
+  if (roomsGuestsMap[adRoomsSelect.value].indexOf(adGuestsSelect.value) === -1) {
     adGuestsSelect.setCustomValidity('Укажите допустимое количество гостей.');
   } else {
     adGuestsSelect.setCustomValidity('');
@@ -60,12 +60,12 @@ const onGuestsSelect = () => {
 };
 
 const onRoomsSelect = () => {
-  updateDependentValidValues(adRoomsSelect.value, adGuestsSelect, RoomsGuestsMap);
+  updateDependentValidValues(adRoomsSelect.value, adGuestsSelect, roomsGuestsMap);
   onGuestsSelect();
 };
 
 const onTypesSelect = () => {
-  setMinPrice(adTypeSeclect.value, adPriceInput, TypePriceMap);
+  setMinPrice(adTypeSeclect.value, adPriceInput, typePriceMap);
 };
 
 const onTimeInSelect = () => {
