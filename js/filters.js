@@ -35,12 +35,12 @@ const filterByGuests = (ad) => filterByElement(ad, guestsFilterField, 'guests', 
 const filterByPrice = (ad) => filterByElement(ad, priceFilterField, 'price', getPriceType);
 
 const filterByFeatures = (ad) => {
-  const arr = Array.from(featuresFilterField);
-  const featuresFilter = ad.offer.features;
-  const userFeatures = arr.filter((feature) => feature.checked);
+  const featuresFilters = Array.from(featuresFilterField);
+  const adFeatures = ad.offer.features;
+  const userFeatures = featuresFilters.filter((feature) => feature.checked);
   if (userFeatures.length === 0) {return true;}
-  if(featuresFilter) {
-    return userFeatures.every((feature) => featuresFilter.includes(feature.value));
+  if(adFeatures) {
+    return userFeatures.every((feature) => adFeatures.includes(feature.value));
   }
 };
 

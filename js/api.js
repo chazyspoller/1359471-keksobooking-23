@@ -1,5 +1,5 @@
-const loadData = (url, method, onSuccess, onError) => {
-  fetch(url, method)
+const loadData = (url, settings, onSuccess, onError) => {
+  fetch(url, settings)
     .then((response) => {
       if (response.ok) {
         return response;
@@ -7,8 +7,8 @@ const loadData = (url, method, onSuccess, onError) => {
       throw Error;
     })
     .then((response) => response.json())
-    .then((ad) => {
-      onSuccess(ad);
+    .then((data) => {
+      onSuccess(data);
     })
     .catch(() => {
       onError();

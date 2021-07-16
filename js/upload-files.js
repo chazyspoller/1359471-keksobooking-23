@@ -27,18 +27,18 @@ const loadFile = (fileField, filePreview) => {
   reader.readAsDataURL(file);
 };
 
-const onLoadFile = (evt) => {
+const onFileLoad = (evt) => {
   evt.target === avatarField ? loadFile(avatarField, avatarPreview): loadFile(photoHouseField, addImgElement(photoHousePreview));
 };
 
 const addLoadPhotoListeners = () => {
-  avatarField.addEventListener('change', onLoadFile);
-  photoHouseField.addEventListener('change', onLoadFile);
+  avatarField.addEventListener('change', onFileLoad);
+  photoHouseField.addEventListener('change', onFileLoad);
 };
 
 const removeLoadPhotoListeners = () => {
-  avatarField.removeEventListener('change', onLoadFile);
-  photoHouseField.removeEventListener('change', onLoadFile);
+  avatarField.removeEventListener('change', onFileLoad);
+  photoHouseField.removeEventListener('change', onFileLoad);
 };
 
 const resetPhotos = () => {

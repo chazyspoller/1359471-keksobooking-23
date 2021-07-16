@@ -4,56 +4,47 @@ const cardTemplate = document.querySelector('#card').content.querySelector('.pop
 //Source: https://proweb63.ru/help/js/declension-in-js
 const getDeclinationOfWordsByNumber = (number, txt, cases = [2, 0, 1, 1, 1, 2]) => txt[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 
-const dictionaryRooms = [
+const DICTIONARY_ROOMS = [
   'комната',
   'комнаты',
   'комнат',
 ];
 
-const dictionaryRoomsWithGuests = [
+const DICTIONARY_ROOMS_WITH_GUESTS = [
   'комната для ',
   'комнаты для ',
   'комнат для ',
 ];
 
-const dictionaryGuests = [
+const DICTIONARY_GUESTS = [
   'гость',
   'гостя',
   'гостей',
 ];
 
-const dictionaryGuestsWithRooms = [
+const DICTIONARY_GUESTS_WITH_ROOMS = [
   'гостя',
   'гостей',
   'гостей',
 ];
 
 const generateRoomsAndGuestsPhrases = (rooms, guests) => {
-  let roomsReaction, guestsReaction;
-
-  roomsReaction = `${rooms} ${getDeclinationOfWordsByNumber(rooms, dictionaryRooms)}`;
-  if (guests) {
-    roomsReaction = `${rooms} ${getDeclinationOfWordsByNumber(rooms, dictionaryRoomsWithGuests)}`;
-  }
-  guestsReaction = `${guests} ${getDeclinationOfWordsByNumber(guests, dictionaryGuests)}`;
-  if (rooms) {
-    guestsReaction = `${guests} ${getDeclinationOfWordsByNumber(guests, dictionaryGuestsWithRooms)}`;
-  }
+  const guestsDescription = rooms
+    ? `${guests} ${getDeclinationOfWordsByNumber(guests, DICTIONARY_GUESTS_WITH_ROOMS)}`
+    : `${guests} ${getDeclinationOfWordsByNumber(guests, DICTIONARY_GUESTS)}`;
+  const roomsDescription = guests
+    ? `${rooms} ${getDeclinationOfWordsByNumber(rooms, DICTIONARY_ROOMS_WITH_GUESTS)}`
+    : `${rooms} ${getDeclinationOfWordsByNumber(rooms, DICTIONARY_ROOMS)}`;
 
   return {
-    firstPhrase: roomsReaction,
-    secondPhrase: guestsReaction,
+    firstPhrase: roomsDescription,
+    secondPhrase: guestsDescription,
   };
 };
 
 const generateTimePhrases = (checkin, checkout) => {
-  let checkoutReaction;
-
+  const checkoutReaction = checkin ? `, выезд до ${checkout}` : `Выезд до ${checkout}`;
   const checkinReaction = `Заезд после ${checkin}`;
-  checkoutReaction = `, выезд до ${checkout}`;
-  if (!checkin) {
-    checkoutReaction = `Выезд до ${checkout}`;
-  }
 
   return {
     firstPhrase: checkinReaction,
@@ -61,7 +52,7 @@ const generateTimePhrases = (checkin, checkout) => {
   };
 };
 
-const checkIsEmpty = (valueToCheck, elementHidden) => {
+const isEmpty = (valueToCheck, elementHidden) => {
   if (!valueToCheck || (valueToCheck.length === 0)) {
     elementHidden.classList.add('hidden');
   }
@@ -114,11 +105,11 @@ const getPhotos = (photosData, element) => {
 //Generate features
 //Generate Photos of place
 const renderElements = (elementsData, template, callback, newElement) => {
-  if (!checkIsEmpty(elementsData, newElement)) {
+  if (!isEmpty(elementsData, newElement)) {
     const elementsListFragment = document.createDocumentFragment();
     newElement.innerHTML = '';
 
-    elementsData.forEach ((element) => {
+    elementsData.forEach((element) => {
       const elementTemplate = template.cloneNode(true);
       elementsListFragment.appendChild(callback(element, elementTemplate));
     });
@@ -128,7 +119,7 @@ const renderElements = (elementsData, template, callback, newElement) => {
 };
 
 const setContent = (valueToCheck, element, elementProperty = 'textContent', valueToSet) => {
-  if (!checkIsEmpty(valueToCheck, element)) {
+  if (!isEmpty(valueToCheck, element)) {
     element[elementProperty] = valueToSet ? valueToSet : valueToCheck;
   }
 };
@@ -136,7 +127,19 @@ const setContent = (valueToCheck, element, elementProperty = 'textContent', valu
 const generateCard = (singleAd) => {
   const {
     author: {avatar: avatarData},
-    offer: {title: titleData, address: addressData, price: priceData, type: typeData, rooms: roomsData, guests: guestsData, checkin: checkinData, checkout: checkoutData, features: featuresData, description: descriptionData, photos: photosData},
+    offer: {
+      title: titleData,
+      address: addressData,
+      price: priceData,
+      type: typeData,
+      rooms: roomsData,
+      guests: guestsData,
+      checkin: checkinData,
+      checkout: checkoutData,
+      features: featuresData,
+      description: descriptionData,
+      photos: photosData,
+    },
   } = singleAd;
   const adElement = cardTemplate.cloneNode(true);
   const avatar = adElement.querySelector('.popup__avatar');

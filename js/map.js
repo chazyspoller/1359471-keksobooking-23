@@ -3,7 +3,7 @@ import {loadData} from './api.js';
 import {generateCard} from './cards.js';
 import {showMessage} from './util.js';
 import {addFiltersSelectListener, filterByType, filterByRooms, filterByGuests, filterByPrice, filterByFeatures} from './filters.js';
-import {resetPhotos} from './avatar.js';
+import {resetPhotos} from './upload-files.js';
 
 const LAT_TOKYO = 35.6895;
 const LNG_TOKYO = 139.69171;
@@ -50,8 +50,8 @@ const renderSeveralAdsWithFilters = (ads) => {
 //Map initialisation
 const map = L.map('map-canvas')
   .on('load', () => {
-    loadData(URL_DOWNLOAD, {method: 'GET'}, renderSeveralAdsWithFilters, showMessage);
     switchFormToActiveState();
+    loadData(URL_DOWNLOAD, {method: 'GET'}, renderSeveralAdsWithFilters, showMessage);
     setValueToAddressField(mainMarker);
   })
   .setView({
@@ -106,18 +106,20 @@ const createAdPin = (ad) => {
 };
 
 function renderAdsOnMap(ads) {
-  map.removeLayer(pinsGroup);
-  pinsGroup = L.layerGroup().addTo(map);
-  ads
-    .slice()
-    .filter(filterByType)
-    .filter(filterByRooms)
-    .filter(filterByPrice)
-    .filter(filterByGuests)
-    .filter(filterByFeatures)
-    .slice(0, MAX_ADS_SHOWN)
-    .forEach(createAdPin);
-  return ads;
+  if (ads) {
+    map.removeLayer(pinsGroup);
+    pinsGroup = L.layerGroup().addTo(map);
+    ads
+      .slice()
+      .filter(filterByType)
+      .filter(filterByRooms)
+      .filter(filterByPrice)
+      .filter(filterByGuests)
+      .filter(filterByFeatures)
+      .slice(0, MAX_ADS_SHOWN)
+      .forEach(createAdPin);
+    return ads;
+  }
 }
 
 //Clear ad form/filters form

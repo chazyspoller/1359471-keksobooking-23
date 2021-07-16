@@ -1,7 +1,7 @@
 import {resetFormFields} from './map.js';
 import {loadData} from './api.js';
 import {removeFiltersSelectListener} from './filters.js';
-import {addLoadPhotoListeners, removeLoadPhotoListeners} from './avatar.js';
+import {addLoadPhotoListeners, removeLoadPhotoListeners} from './upload-files.js';
 
 const URL_SEND = 'https://23.javascript.pages.academy/keksobooking';
 
@@ -9,7 +9,7 @@ const adForm = document.querySelector('.ad-form');
 const adPriceInput = adForm.querySelector('#price');
 const adRoomsSelect = adForm.querySelector('#room_number');
 const adGuestsSelect = adForm.querySelector('#capacity');
-const adTypeSeclect = adForm.querySelector('#type');
+const adTypeSelect = adForm.querySelector('#type');
 const adTimeInSelect = adForm.querySelector('#timein');
 const adTimeOutSelect = adForm.querySelector('#timeout');
 const clearBtn = document.querySelector('.ad-form__reset');
@@ -32,13 +32,13 @@ const typePriceMap = {
 };
 
 //Validation
-const updateDependentValidValues = (valueCheck, valueChange, mapList) => {
-  for (const value of valueChange.children) {
+const updateDependentValidValues = (valueToCheck, valueToChange, mapList) => {
+  for (const value of valueToChange.children) {
     value.disabled = true;
   }
 
-  mapList[valueCheck].forEach((value) => {
-    valueChange.querySelector(`option[value="${value}"]`).disabled = false;
+  mapList[valueToCheck].forEach((value) => {
+    valueToChange.querySelector(`option[value="${value}"]`).disabled = false;
   });
 };
 
@@ -64,8 +64,8 @@ const onRoomsSelect = () => {
   onGuestsSelect();
 };
 
-const onTypesSelect = () => {
-  setMinPrice(adTypeSeclect.value, adPriceInput, typePriceMap);
+const onTypeSelect = () => {
+  setMinPrice(adTypeSelect.value, adPriceInput, typePriceMap);
 };
 
 const onTimeInSelect = () => {
@@ -103,10 +103,10 @@ const onModalClick = (modal) => {
 };
 
 //Variables for listeners functions
-const onEscKeyDownSuccess = onEscKeyDown.bind(this, modalSuccess);
-const onEscKeyDownError = onEscKeyDown.bind(this, modalError);
-const onClickSuccess = onModalClick.bind(this, modalSuccess);
-const onClickError = onModalClick.bind(this, modalError);
+const onEscKeyDownSuccess = onEscKeyDown.bind(null, modalSuccess);
+const onEscKeyDownError = onEscKeyDown.bind(null, modalError);
+const onClickSuccess = onModalClick.bind(null, modalSuccess);
+const onClickError = onModalClick.bind(null, modalError);
 
 const openModalMessage = (modal) => {
   modal.classList.remove('hidden');
@@ -126,26 +126,26 @@ function closeModalMessage(modal) {
   }
 }
 
-const onSuccessSend = () => {
+const onDataSuccessSend = () => {
   openModalMessage(modalSuccess);
   resetFormFields();
 };
 
-const onErrorSend = () => {
+const onDataErrorSend = () => {
   openModalMessage(modalError);
 };
 
 const onFormSubmit = (evt) => {
   evt.preventDefault();
   const formData = new FormData(evt.target);
-  loadData(URL_SEND, {method: 'POST', body: formData}, onSuccessSend, onErrorSend);
+  loadData(URL_SEND, {method: 'POST', body: formData}, onDataSuccessSend, onDataErrorSend);
 };
 
 //Form Listeners
 const addFormListeners = () => {
   adRoomsSelect.addEventListener('input', onRoomsSelect);
   adGuestsSelect.addEventListener('change', onGuestsSelect);
-  adTypeSeclect.addEventListener('input', onTypesSelect);
+  adTypeSelect.addEventListener('input', onTypeSelect);
   adTimeInSelect.addEventListener('input', onTimeInSelect);
   adTimeOutSelect.addEventListener('input', onTimeOutSelect);
   adForm.addEventListener('submit', onFormSubmit);
@@ -156,7 +156,7 @@ const addFormListeners = () => {
 const removeFormListeners = () => {
   adRoomsSelect.removeEventListener('input', onRoomsSelect);
   adGuestsSelect.removeEventListener('change', onGuestsSelect);
-  adTypeSeclect.removeEventListener('input', onTypesSelect);
+  adTypeSelect.removeEventListener('input', onTypeSelect);
   adTimeInSelect.removeEventListener('input', onTimeInSelect);
   adTimeOutSelect.removeEventListener('input', onTimeOutSelect);
   adForm.removeEventListener('submit', onFormSubmit);
