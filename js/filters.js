@@ -1,8 +1,6 @@
 import {debounce} from './util.js';
 import {renderAdsOnMap} from './map.js';
 
-const RERENDER_DELAY = 500;
-
 const filtersForm = document.querySelector('.map__filters');
 const typeFilterField = document.querySelector('#housing-type');
 const priceFilterField = document.querySelector('#housing-price');
@@ -44,7 +42,7 @@ const filterByFeatures = (ad) => {
   }
 };
 
-const renderFiltersCallback = debounce(renderAdsOnMap, RERENDER_DELAY);
+const renderFiltersCallback = debounce(renderAdsOnMap);
 
 const addFiltersSelectListener = (ads) => {
   onFiltersChange = () => renderFiltersCallback(ads);

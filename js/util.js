@@ -1,3 +1,5 @@
+const RERENDER_DELAY = 500;
+
 const showMessage = () => {
   const messageContainer = document.createElement('div');
   messageContainer.style.zIndex = 500;
@@ -21,7 +23,7 @@ const showMessage = () => {
   }, 5000);
 };
 
-const debounce = (callback, timeoutDelay = 500) => {
+const debounce = (callback, timeoutDelay = RERENDER_DELAY) => {
   let timeoutId;
 
   return (...rest) => {

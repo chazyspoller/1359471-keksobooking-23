@@ -1,5 +1,5 @@
-const loadData = (url, settings, onSuccess, onError) => {
-  fetch(url, settings)
+const loadData = (url, options, onSuccess, onError) => {
+  fetch(url, options)
     .then((response) => {
       if (response.ok) {
         return response;

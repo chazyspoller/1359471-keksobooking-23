@@ -43,12 +43,12 @@ const generateRoomsAndGuestsPhrases = (rooms, guests) => {
 };
 
 const generateTimePhrases = (checkin, checkout) => {
-  const checkoutReaction = checkin ? `, выезд до ${checkout}` : `Выезд до ${checkout}`;
-  const checkinReaction = `Заезд после ${checkin}`;
+  const checkoutDescription = checkin ? `, выезд до ${checkout}` : `Выезд до ${checkout}`;
+  const checkinDescription = `Заезд после ${checkin}`;
 
   return {
-    firstPhrase: checkinReaction,
-    secondPhrase: checkoutReaction,
+    firstPhrase: checkinDescription,
+    secondPhrase: checkoutDescription,
   };
 };
 
