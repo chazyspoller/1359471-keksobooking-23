@@ -28,7 +28,7 @@ const DICTIONARY_GUESTS_WITH_ROOMS = [
   'гостей',
 ];
 
-const offerType = {
+const offerTypes = {
   palace: 'Дворец',
   flat: 'Квартира',
   house: 'Дом',
@@ -87,15 +87,15 @@ const renderDoubleElements = (elementFirst, elementSecond, callback, newElement)
 const getOfferType = (type) => {
   switch (type) {
     case ('palace'):
-      return offerType.palace;
+      return offerTypes.palace;
     case ('flat'):
-      return offerType.flat;
+      return offerTypes.flat;
     case ('house'):
-      return offerType.house;
+      return offerTypes.house;
     case ('bungalow'):
-      return offerType.bungalow;
+      return offerTypes.bungalow;
     case ('hotel'):
-      return offerType.hotel;
+      return offerTypes.hotel;
   }
 };
 

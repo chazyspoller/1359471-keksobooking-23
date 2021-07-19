@@ -4,6 +4,11 @@ import {renderAdsOnMap} from './map.js';
 const LOW_PRICE = 10000;
 const HIGH_PRICE = 50000;
 
+const priceTypes = {
+  low: 'low',
+  middle: 'middle',
+  high: 'high',
+};
 
 const filtersForm = document.querySelector('.map__filters');
 const typeFilterField = document.querySelector('#housing-type');
@@ -15,11 +20,11 @@ let onFiltersChange;
 
 const getPriceType = (price) => {
   if (price < LOW_PRICE) {
-    return 'low';
+    return priceTypes.low;
   } else if (price >= LOW_PRICE  && price < HIGH_PRICE) {
-    return 'middle';
+    return priceTypes.middle;
   } else {
-    return 'high';
+    return priceTypes.high;
   }
 };
 
