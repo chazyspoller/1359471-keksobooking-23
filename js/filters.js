@@ -1,6 +1,10 @@
 import {debounce} from './util.js';
 import {renderAdsOnMap} from './map.js';
 
+const LOW_PRICE = 10000;
+const HIGH_PRICE = 50000;
+
+
 const filtersForm = document.querySelector('.map__filters');
 const typeFilterField = document.querySelector('#housing-type');
 const priceFilterField = document.querySelector('#housing-price');
@@ -10,9 +14,9 @@ const featuresFilterField = document.querySelectorAll('.map__checkbox');
 let onFiltersChange;
 
 const getPriceType = (price) => {
-  if (price < 10000) {
+  if (price < LOW_PRICE) {
     return 'low';
-  } else if (price >= 10000  && price < 50000) {
+  } else if (price >= LOW_PRICE  && price < HIGH_PRICE) {
     return 'middle';
   } else {
     return 'high';
@@ -36,7 +40,9 @@ const filterByFeatures = (ad) => {
   const featuresFilters = Array.from(featuresFilterField);
   const adFeatures = ad.offer.features;
   const userFeatures = featuresFilters.filter((feature) => feature.checked);
-  if (userFeatures.length === 0) {return true;}
+  if (userFeatures.length === 0) {
+    return true;
+  }
   if(adFeatures) {
     return userFeatures.every((feature) => adFeatures.includes(feature.value));
   }

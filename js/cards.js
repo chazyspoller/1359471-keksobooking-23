@@ -28,6 +28,14 @@ const DICTIONARY_GUESTS_WITH_ROOMS = [
   'гостей',
 ];
 
+const offerType = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalow: 'Бунгало',
+  hotel: 'Отель',
+};
+
 const generateRoomsAndGuestsPhrases = (rooms, guests) => {
   const guestsDescription = rooms
     ? `${guests} ${getDeclinationOfWordsByNumber(guests, DICTIONARY_GUESTS_WITH_ROOMS)}`
@@ -79,15 +87,15 @@ const renderDoubleElements = (elementFirst, elementSecond, callback, newElement)
 const getOfferType = (type) => {
   switch (type) {
     case ('palace'):
-      return 'Дворец';
+      return offerType.palace;
     case ('flat'):
-      return 'Квартира';
+      return offerType.flat;
     case ('house'):
-      return 'Дом';
+      return offerType.house;
     case ('bungalow'):
-      return 'Бунгало';
+      return offerType.bungalow;
     case ('hotel'):
-      return 'Отель';
+      return offerType.hotel;
   }
 };
 
